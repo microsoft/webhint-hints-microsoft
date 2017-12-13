@@ -1,0 +1,67 @@
+{
+  "author": "",
+  "ava": {
+    "babel": {
+      "presets": []
+    },
+    "concurrency": 5,
+    "failFast": false,
+    "files": [
+      "dist/tests/**/*.js"
+    ],
+    "timeout": "1m"
+  },
+  "description": "Use Chisel to assess the accessibility of web sites and web applications",
+  "devDependencies": {
+    "@types/debug": "0.0.30",
+    "@types/node": "8.0.14",
+    "async-retry": "^1.1.4",
+    "ava": "^0.24.0",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-istanbul": "^4.1.5",
+    "babel-preset-es2017": "^6.22.0",
+    "babel-register": "^6.26.0",
+    "cpx": "^1.5.0",
+    "eslint": "^4.13.0",
+    "eslint-plugin-markdown": "^1.0.0-beta.7",
+    "eslint-plugin-typescript": "^0.8.1",
+    "express": "^4.16.2",
+    "markdownlint-cli": "^0.5.0",
+    "npm-run-all": "^4.1.2",
+    "on-headers": "^1.0.1",
+    "rimraf": "^2.6.2",
+    "sonarwhal": "^0.20.1",
+    "typescript": "^2.6.2",
+    "typescript-eslint-parser": "^10.0.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "keywords": [
+    "rule",
+    "sonarwhal"
+  ],
+  "main": "dist/src/index.js",
+  "name": "@sonarwhal/rule-chisel",
+  "scripts": {
+    "build": "npm run clean && npm-run-all build:*",
+    "build:assets": "cpx \"./{src,tests}/**/{!(*.ts),.!(ts)}\" dist",
+    "build:ts": "tsc --outDir dist",
+    "clean": "rimraf dist",
+    "test": "npm run lint && npm run build && ava",
+    "lint": "npm-run-all lint:*",
+    "lint:js": "eslint --ext md --ext ts --ignore-pattern dist .",
+    "lint:md": "markdownlint README.md",
+    "watch:ts": "npm run build:ts -- --watch",
+    "init": "npm install && npm run build",
+    "sonarwhal": "node node_modules/sonarwhal/dist/src/bin/sonarwhal.js"
+  },
+  "peerDependencies": {
+    "sonarwhal": "^0.20.1"
+  },
+  "repository": "",
+  "version": "0.1.0",
+  "dependencies": {
+    "@mskeros/chisel": "^1.127.2"
+  }
+}
