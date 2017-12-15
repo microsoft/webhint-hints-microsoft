@@ -1,0 +1,40 @@
+# chisel (`chisel`)
+
+Use Chisel to access accessibility of web sites and web applications
+
+## Can the rule be configured?
+
+Yes. You can configure the rule by passing parameters inside the `.sonarwhal`
+file for this rule.
+
+For example, you can specifiy the rule to run like below:
+
+```json
+    "rules": {
+        "chisel": ["warning", { "testsToRun": "color-contrast"}]
+    }
+```
+
+The available parameters include:
+
+* testsToRun?: string[] - (Optional) Used to set the rules that will be run
+    in chisel test run.
+
+* dom?: NodeSelector & Node | NodeList - (Optional) Used to set the elements
+    that will be tested; defaults to document if dom, selector, and include/exclude
+    are not set.
+
+* selector?: string - (Optional) Uses selector to get the elements that will
+    be tested; ignored if dom is set.
+
+* include?: string[] - (Optional) Uses an array of selectors to get the
+    elements that will be tested and can be used with exclude; ignored if dom or
+    selector are set.
+
+* exclude?: string[] - (Optional) Uses an array of selectors to get the
+    elements that will not be tested and can be used with include; ignored if
+    dom or selector are set.
+
+* enableBestPracticeRules?: boolean - (Optional) Enables rule that are not
+    mapped to MAS/considered best practice; default is false and ignored if
+    testsToRun is set.

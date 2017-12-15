@@ -7,6 +7,5 @@
 /.vscode/
 /build/
 /coverage/
-/dist/
-/doc/
-/node_modules/
+rules/*/node_modules/
+rules/*/dist/
