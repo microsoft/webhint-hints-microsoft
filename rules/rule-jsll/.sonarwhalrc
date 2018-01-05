@@ -1,0 +1,17 @@
+{
+    "connector": {
+        "name": "jsdom",
+        "options": {
+            "waitFor": 1000
+        }
+    },
+    "formatters": "stylish",
+    "parsers": ["javascript"],
+    "rulesTimeout": 120000,
+    "rules": {
+        "validate-jsll-script-included": "error",
+        "validate-awa-init": "error",
+        "validate-optional-config": "warning",
+        "validate-required-config": "error"
+    }
+}
