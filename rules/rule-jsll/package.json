@@ -57,7 +57,7 @@
     "sonarwhal": "node node_modules/sonarwhal/dist/src/bin/sonarwhal.js"
   },
   "peerDependencies": {
-    "sonarwhal": "^0.21.0"
+    "sonarwhal": "^0.22.0"
   },
   "repository": "",
   "version": "0.1.0",

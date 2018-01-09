@@ -31,7 +31,12 @@ const validateCoreData = (property, eslintContext, severity) => {
 };
 
 const validateAutoCapture = (property, eslintContext, severity) => {
+    const report = severityMatch(config, 'autoCapture', severity);
     const autoCaptureValue = property.value;
+
+    if (report && autoCaptureValue.type !== types.object) {
+        return eslintContext.report(autoCaptureValue, `The "autoCapture" property is not a valid object.`)
+    }
 
     return validateNodeProps(autoCapture[severity], autoCaptureValue, severity, eslintContext); // eslint-disable-line typescript/no-use-before-define,no-use-before-define
 };
@@ -103,6 +108,66 @@ const validateMarket = (property, eslintContext, severity) => {
     if (!validateCode.validateLanguageCode(denormalizedCode)) {
         eslintContext.report(property.value, `The "market" parameter contains invalid country code "${countryCode}".`);
     }
+};
+
+export const validateAwaInit = (node, eslintContext, report) => {
+    const expression = node.expression;
+    const scope = eslintContext.getScope();
+    const variables = scope.variables;
+    const { callee } = expression;
+    let configNode;
+
+    if (!callee || !callee.object || callee.object.name !== 'awa' || callee.property.name !== 'init') {
+        report && eslintContext.report(node, 'JSLL is not initialized with "awa.init(config)" function. Initialization script should be placed immediately after JSLL script.');
+
+        return;
+    }
+
+    const initArgs = expression.arguments;
+
+    if (initArgs.length < 1) {
+        report && eslintContext.report(node, `JSLL initialization function "awa.init(config)" missing required parameter "config".`);
+
+        return;
+    }
+
+    if (initArgs.length > 1) {
+        report && eslintContext.report(node, `"init" arguments can't take more than one arguments.`);
+
+        return;
+    }
+
+    const configVal = initArgs[0];
+
+    if (!['Identifier', 'ObjectExpression'].includes(configVal.type)) {
+        report && eslintContext.report(configVal, `The argument of "awa.init" is not of type Object.`);
+
+        return;
+    }
+
+    if (configVal.type === configProps.types.identifier) { // e.g., awa.init(config);
+        const configDefinition = variables.find((variable) => {
+            return variable.name === configVal.name;
+        });
+
+        if (!configDefinition) {
+            report && eslintContext.report(node, `${configVal.name} is not defined.`);
+
+            return;
+        }
+
+        configNode = configDefinition.defs[0].node.init;
+
+        if (configNode.type !== configProps.types.object) {
+            report && eslintContext.report(configNode, `${configDefinition.name} is not of type Object.`);
+
+            return;
+        }
+    } else {
+        configNode = configVal; // awa.init({...});
+    }
+
+    return configNode;
 };
 
 /** List of validators. */
