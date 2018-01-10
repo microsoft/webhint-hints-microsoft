@@ -24,9 +24,9 @@ const coreData = {
 const autoCapture = { optional: ['scroll', 'lineage'] };
 
 /** Validate the 'coreData' property. */
-const validateCoreData = (property, eslintContext, severity) => {
+const validateCoreData = (property, eslintContext, severity: string) => {
     const coreDataValue = property.value;
-    const report = config[severity].includes('coreData');
+    const report: boolean = config[severity].includes('coreData');
 
     if (report && coreDataValue.type !== types.object) {
         return eslintContext.report(coreDataValue, `The "coreData" property must be a valid object.`);
@@ -36,8 +36,8 @@ const validateCoreData = (property, eslintContext, severity) => {
 };
 
 /** Validate the 'autoCapture' property. */
-const validateAutoCapture = (property, eslintContext, severity) => {
-    const report = severityMatch(config, 'autoCapture', severity);
+const validateAutoCapture = (property, eslintContext, severity: string) => {
+    const report: boolean = severityMatch(config, 'autoCapture', severity);
     const autoCaptureValue = property.value;
 
     if (report && autoCaptureValue.type !== types.object) {
@@ -48,7 +48,7 @@ const validateAutoCapture = (property, eslintContext, severity) => {
 };
 
 /** Validate the 'useShortNameForContentBlob' property. */
-const validateUseShortName = (property, eslintContext, severity) => {
+const validateUseShortName = (property, eslintContext, severity: string) => {
     if (!severityMatch(config, 'useShortNameForContentBlob', severity)) {
         return;
     }
@@ -61,7 +61,7 @@ const validateUseShortName = (property, eslintContext, severity) => {
 };
 
 /** Validate the 'appId' property. */
-const validateAppId = (property, eslintContext, severity) => {
+const validateAppId = (property, eslintContext, severity: string) => {
     if (!severityMatch(coreData, 'appId', severity)) {
         return;
     }
@@ -74,7 +74,7 @@ const validateAppId = (property, eslintContext, severity) => {
 };
 
 /** Validate the 'lineage' property. */
-const validateLineage = (property, eslintContext, severity) => {
+const validateLineage = (property, eslintContext, severity: string) => {
     if (!severityMatch(autoCapture, 'lineage', severity)) {
         return;
     }
@@ -87,7 +87,7 @@ const validateLineage = (property, eslintContext, severity) => {
 };
 
 /** Validate the 'market' property. */
-const validateMarket = (property, eslintContext, severity) => {
+const validateMarket = (property, eslintContext, severity: string) => {
     if (!severityMatch(coreData, 'market', severity)) {
         return;
     }
@@ -99,7 +99,7 @@ const validateMarket = (property, eslintContext, severity) => {
 
         return;
     }
-    const regex = /[a-z]*-[a-z]*/;
+    const regex: RegExp = /[a-z]*-[a-z]*/;
 
     if (!regex.test(marketValue.value)) {
         eslintContext.report(marketValue, `The format of "market" parameter is not valid.`);
@@ -108,7 +108,7 @@ const validateMarket = (property, eslintContext, severity) => {
     }
 
     const [languageCode, countryCode] = marketValue.value.split('-');
-    const denormalizedCode = `${languageCode}-${countryCode.toUpperCase()}`;
+    const denormalizedCode: string = `${languageCode}-${countryCode.toUpperCase()}`;
     // The validator doesn't recognize lowercase country codes.
 
     if (!validateCode.validateLanguageCode(denormalizedCode)) {
@@ -121,7 +121,7 @@ const validateMarket = (property, eslintContext, severity) => {
 };
 
 /** Validate the initialization of JSLL using `awa.init(config)`. */
-export const validateAwaInit = (node, eslintContext, report) => {
+export const validateAwaInit = (node, eslintContext, report: boolean) => {
     const expression = node.expression;
     const scope = eslintContext.getScope();
     const variables = scope.variables;
@@ -204,7 +204,7 @@ const validators = {
 };
 
 /** Validate properties of the current node based on severity. */
-export const validateNodeProps = (expectedProps, target, severity, eslintContext) => { // eslint-disable-line consistent-return
+export const validateNodeProps = (expectedProps: Array<string>, target, severity: string, eslintContext) => { // eslint-disable-line consistent-return
     if (!expectedProps || !expectedProps.length) {
         return;
     }

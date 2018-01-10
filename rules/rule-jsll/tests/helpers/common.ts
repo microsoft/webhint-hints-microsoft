@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
 
-export const modifyValue = (obj, targetProp, targetValue) => {
+export const modifyValue = (obj, targetProp: string, targetValue) => {
     if (!(obj instanceof Object) || Array.isArray(obj)) {
         return;
     }
 
-    const isDelete = targetValue === null;
+    const isDelete: boolean = targetValue === null;
 
     if (obj.hasOwnProperty(targetProp)) {
         if (isDelete) {
@@ -14,7 +14,7 @@ export const modifyValue = (obj, targetProp, targetValue) => {
             obj[targetProp] = targetValue;
         }
     } else {
-        const props = Object.keys(obj);
+        const props: Array<string> = Object.keys(obj);
 
         props.forEach((childProp) => {
             modifyValue(obj[childProp], targetProp, targetValue);
@@ -46,9 +46,9 @@ export const code = {
     notImmediateInithasFn: `console.log('a');</script><script>awa.init({})`
 };
 
-export const deleteProp = (prop) => {
+export const deleteProp = (prop: string | Array<string>): string => {
     const missiongPropConfig = _.cloneDeep(perfectConfig);
-    const props = Array.isArray(prop) ? prop : [prop];
+    const props: Array<string> = Array.isArray(prop) ? prop : [prop];
 
     props.forEach((property) => {
         modifyValue(missiongPropConfig, property, null);
@@ -57,7 +57,7 @@ export const deleteProp = (prop) => {
     return `var config=${JSON.stringify(missiongPropConfig)};`;
 };
 
-export const modifyConfigVal = (targetProp, targetValue) => {
+export const modifyConfigVal = (targetProp: string, targetValue: any): string => {
     const modifiedConfig = _.cloneDeep(perfectConfig);
 
     modifyValue(modifiedConfig, targetProp, targetValue);
@@ -65,6 +65,6 @@ export const modifyConfigVal = (targetProp, targetValue) => {
     return `var config=${JSON.stringify(modifiedConfig)};`;
 };
 
-export const scriptWrapper = (config, initCode, includeJSLLScript = true) => {
+export const scriptWrapper = (config, initCode: string, includeJSLLScript: boolean = true): string => {
     return `${includeJSLLScript ? code.jsllScript : ''}<script>${config || ''}${initCode || ''}</script>`;
 };
