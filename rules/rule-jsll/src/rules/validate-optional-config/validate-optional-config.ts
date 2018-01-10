@@ -56,9 +56,7 @@ const rule: IRuleBuilder = {
                 return;
             }
 
-            const results = linter.verify(scriptParse.sourceCode, {
-                rules: { 'validate-required-config': 'warn' }
-            });
+            const results = linter.verify(scriptParse.sourceCode, { rules: { 'validate-required-config': 'warn' } });
 
             hasJSLLScript = false;
             // Only the script included immediately after the JSLL link needs to be validated.

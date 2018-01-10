@@ -2,9 +2,8 @@ import { generateHTMLPage } from 'sonarwhal/dist/tests/helpers/misc';
 import { getRuleName } from 'sonarwhal/dist/src/lib/utils/rule-helpers';
 import { IRuleTest } from 'sonarwhal/dist/tests/helpers/rule-test-type';
 import * as ruleRunner from 'sonarwhal/dist/tests/helpers/rule-runner';
-import * as _ from 'lodash';
 
-import { code, perfectConfig, deleteProp, modifyConfigVal, scriptWrapper } from '../common';
+import { code, deleteProp, modifyConfigVal, scriptWrapper } from '../helpers/common';
 
 const ruleName = getRuleName(__dirname);
 
@@ -15,10 +14,10 @@ const messages = {
     invalidMarketValue: `The format of "market" parameter is not valid.`,
     invalidUseShortNameForContentBlob: `"useShortNameForContentBlob" parameter is not set to true.`,
     missingLineage: `lineage" parameter is not set to true.`,
-    missingPageNameAndEnv: `pageName, env are optional but missing.`,
     missingOptionalConfigProp: `useShortNameForContentBlob is optional but missing.`,
     missingPageName: `pageName is optional but missing.`,
-    missingUseShortNameForContentBlob: `useShortNameForContentBlob is optional but missing.`,
+    missingPageNameAndEnv: `pageName, env are optional but missing.`,
+    missingUseShortNameForContentBlob: `useShortNameForContentBlob is optional but missing.`
 };
 
 const tests: Array<IRuleTest> = [
@@ -56,7 +55,7 @@ const tests: Array<IRuleTest> = [
         serverConfig: generateHTMLPage(`${scriptWrapper(modifyConfigVal('market', 'oo-oo'), code.initConfig)}`)
     },
     {
-        name: `"pageName" is missing`,
+        name: `"pageName" is missing`, // optional child property (pageName) of a required parent property (coreData)
         reports: [{ message: messages.missingPageName }],
         serverConfig: generateHTMLPage(`${scriptWrapper(deleteProp('pageName'), code.initConfig)}`)
     },

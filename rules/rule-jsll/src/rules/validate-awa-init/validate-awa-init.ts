@@ -7,7 +7,7 @@ import { RuleContext } from 'sonarwhal/dist/src/lib/rule-context';
 import { IRule, IAsyncHTMLElement, IRuleBuilder, IElementFound, IScriptParse } from 'sonarwhal/dist/src/lib/types';
 import { debug as d } from 'sonarwhal/dist/src/lib/utils/debug';
 
-import { configProps, validateAwaInit } from '../validator';
+import { validateAwaInit } from '../validator';
 import { isJsllDir } from '../utils';
 
 import { Linter } from 'eslint';
@@ -62,9 +62,7 @@ const rule: IRuleBuilder = {
                 return;
             }
 
-            const results = linter.verify(scriptParse.sourceCode, {
-                rules: { 'validate-awa-init': 'error' }
-            });
+            const results = linter.verify(scriptParse.sourceCode, { rules: { 'validate-awa-init': 'error' } });
 
             hasJSLLScript = false;
             // Only validates the script included immediately after the JSLL link.

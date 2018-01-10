@@ -3,29 +3,27 @@ import { getRuleName } from 'sonarwhal/dist/src/lib/utils/rule-helpers';
 import { IRuleTest } from 'sonarwhal/dist/tests/helpers/rule-test-type';
 import * as ruleRunner from 'sonarwhal/dist/tests/helpers/rule-runner';
 
-import * as _ from 'lodash';
-
-import { code, perfectConfig, deleteProp, modifyConfigVal, scriptWrapper } from '../common';
+import { code, deleteProp, modifyConfigVal, scriptWrapper } from '../helpers/common';
 
 const ruleName = getRuleName(__dirname);
 const messages = {
-    invalidAutoCapture: `The "autoCapture" property is not a valid object.`,
     invalidAppId: `The "appId" must be a non-empty string.`,
+    invalidAutoCapture: `The "autoCapture" property is not a valid object.`,
     missingAppId: `appId is required but missing.`,
     missingAutoCapture: `autoCapture is required but missing.`,
     missingRequiredConfigProps: `autoCapture, coreData are required but missing.`
 };
 const stringPropertyConfig = {
-    'autoCapture': {
-        scroll: true,
-        lineage: true
+    'autoCapture': { // eslint-disable-line quote-props
+        lineage: true,
+        scroll: true
     },
     coreData: {
-        'appId': '1',
-        env: "env",
-        market: "en-us",
-        pageName: "name",
-        pageType: "type"
+        'appId': '1', // eslint-disable-line quote-props
+        env: 'env',
+        market: 'en-us',
+        pageName: 'name',
+        pageType: 'type'
     },
     useShortNameForContentBlob: true
 };

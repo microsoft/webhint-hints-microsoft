@@ -1,46 +1,53 @@
 import * as validateCode from 'locale-code';
 import { severityMatch, reportMissingProps } from './utils';
 
+/** List of types in the parsed Javascript. */
 const types = {
     identifier: 'Identifier',
     object: 'ObjectExpression',
     string: 'Literal'
 };
 
+/** Optional and required properties of 'config'. */
 const config = {
     optional: ['useShortNameForContentBlob'],
     required: ['autoCapture', 'coreData']
 };
 
+/** Optional and required properties of 'coreData'. */
 const coreData = {
     optional: ['pageName', 'pageType', 'env', 'market'],
     required: ['appId']
 };
 
+/** Optional properties of 'autoCapture'. */
 const autoCapture = { optional: ['scroll', 'lineage'] };
 
+/** Validate the 'coreData' property. */
 const validateCoreData = (property, eslintContext, severity) => {
-    const value = property.value;
+    const coreDataValue = property.value;
     const report = config[severity].includes('coreData');
 
-    if (report && value.type !== types.object) {
-        return eslintContext.report(value, `The "coreData" property must be a valid object.`);
+    if (report && coreDataValue.type !== types.object) {
+        return eslintContext.report(coreDataValue, `The "coreData" property must be a valid object.`);
     }
 
-    return validateNodeProps(coreData[severity], value, severity, eslintContext); // eslint-disable-line typescript/no-use-before-define,no-use-before-define
+    return validateNodeProps(coreData[severity], coreDataValue, severity, eslintContext); // eslint-disable-line typescript/no-use-before-define,no-use-before-define
 };
 
+/** Validate the 'autoCapture' property. */
 const validateAutoCapture = (property, eslintContext, severity) => {
     const report = severityMatch(config, 'autoCapture', severity);
     const autoCaptureValue = property.value;
 
     if (report && autoCaptureValue.type !== types.object) {
-        return eslintContext.report(autoCaptureValue, `The "autoCapture" property is not a valid object.`)
+        return eslintContext.report(autoCaptureValue, `The "autoCapture" property is not a valid object.`);
     }
 
     return validateNodeProps(autoCapture[severity], autoCaptureValue, severity, eslintContext); // eslint-disable-line typescript/no-use-before-define,no-use-before-define
 };
 
+/** Validate the 'useShortNameForContentBlob' property. */
 const validateUseShortName = (property, eslintContext, severity) => {
     if (!severityMatch(config, 'useShortNameForContentBlob', severity)) {
         return;
@@ -53,6 +60,7 @@ const validateUseShortName = (property, eslintContext, severity) => {
     }
 };
 
+/** Validate the 'appId' property. */
 const validateAppId = (property, eslintContext, severity) => {
     if (!severityMatch(coreData, 'appId', severity)) {
         return;
@@ -65,6 +73,7 @@ const validateAppId = (property, eslintContext, severity) => {
     }
 };
 
+/** Validate the 'lineage' property. */
 const validateLineage = (property, eslintContext, severity) => {
     if (!severityMatch(autoCapture, 'lineage', severity)) {
         return;
@@ -77,6 +86,7 @@ const validateLineage = (property, eslintContext, severity) => {
     }
 };
 
+/** Validate the 'market' property. */
 const validateMarket = (property, eslintContext, severity) => {
     if (!severityMatch(coreData, 'market', severity)) {
         return;
@@ -110,6 +120,7 @@ const validateMarket = (property, eslintContext, severity) => {
     }
 };
 
+/** Validate the initialization of JSLL using `awa.init(config)`. */
 export const validateAwaInit = (node, eslintContext, report) => {
     const expression = node.expression;
     const scope = eslintContext.getScope();
@@ -118,50 +129,62 @@ export const validateAwaInit = (node, eslintContext, report) => {
     let configNode;
 
     if (!callee || !callee.object || callee.object.name !== 'awa' || callee.property.name !== 'init') {
-        report && eslintContext.report(node, 'JSLL is not initialized with "awa.init(config)" function. Initialization script should be placed immediately after JSLL script.');
+        if (report) {
+            eslintContext.report(node, 'JSLL is not initialized with "awa.init(config)" function. Initialization script should be placed immediately after JSLL script.');
+        }
 
-        return;
+        return null;
     }
 
     const initArgs = expression.arguments;
 
     if (initArgs.length < 1) {
-        report && eslintContext.report(node, `JSLL initialization function "awa.init(config)" missing required parameter "config".`);
+        if (report) {
+            eslintContext.report(node, `JSLL initialization function "awa.init(config)" missing required parameter "config".`);
+        }
 
-        return;
+        return null;
     }
 
     if (initArgs.length > 1) {
-        report && eslintContext.report(node, `"init" arguments can't take more than one arguments.`);
+        if (report) {
+            eslintContext.report(node, `"init" arguments can't take more than one arguments.`);
+        }
 
-        return;
+        return null;
     }
 
     const configVal = initArgs[0];
 
     if (!['Identifier', 'ObjectExpression'].includes(configVal.type)) {
-        report && eslintContext.report(configVal, `The argument of "awa.init" is not of type Object.`);
+        if (report) {
+            eslintContext.report(configVal, `The argument of "awa.init" is not of type Object.`);
+        }
 
-        return;
+        return null;
     }
 
-    if (configVal.type === configProps.types.identifier) { // e.g., awa.init(config);
+    if (configVal.type === types.identifier) { // e.g., awa.init(config);
         const configDefinition = variables.find((variable) => {
             return variable.name === configVal.name;
         });
 
         if (!configDefinition) {
-            report && eslintContext.report(node, `${configVal.name} is not defined.`);
+            if (report) {
+                eslintContext.report(node, `${configVal.name} is not defined.`);
+            }
 
-            return;
+            return null;
         }
 
         configNode = configDefinition.defs[0].node.init;
 
-        if (configNode.type !== configProps.types.object) {
-            report && eslintContext.report(configNode, `${configDefinition.name} is not of type Object.`);
+        if (configNode.type !== types.object) {
+            if (report) {
+                eslintContext.report(configNode, `${configDefinition.name} is not of type Object.`);
+            }
 
-            return;
+            return null;
         }
     } else {
         configNode = configVal; // awa.init({...});
@@ -180,6 +203,7 @@ const validators = {
     useShortNameForContentBlob: validateUseShortName
 };
 
+/** Validate properties of the current node based on severity. */
 export const validateNodeProps = (expectedProps, target, severity, eslintContext) => { // eslint-disable-line consistent-return
     if (!expectedProps || !expectedProps.length) {
         return;
