@@ -1,0 +1,11 @@
+*.lock
+*.log
+*.pid
+*.STALE
+.DS_Store
+/.nyc_output/
+/.vscode/
+/build/
+/coverage/
+rules/*/node_modules/
+rules/*/dist/
