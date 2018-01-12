@@ -35,6 +35,14 @@ const tests: Array<IRuleTest> = [
     {
         name: `"awa.init" has an empty object as config parameter`,
         serverConfig: generateHTMLPage(`${scriptWrapper(null, code.emptyObjconfig)}`)
+    },
+    {
+        // <head>
+        //      <script src="../jsll-4.js"></script>
+        // </head>
+        name: `No script tages are encountered after the JSLL script link`,
+        reports: [{ message: messages.noInit }],
+        serverConfig: generateHTMLPage(`${scriptWrapper(null, null, true)}`)
     }
 ];
 

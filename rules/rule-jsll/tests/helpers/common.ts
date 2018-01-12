@@ -1,11 +1,12 @@
 import * as _ from 'lodash';
 
+/** Look for the target property recursively and modify/delete the value */
 export const modifyValue = (obj, targetProp: string, targetValue) => {
     if (!(obj instanceof Object) || Array.isArray(obj)) {
         return;
     }
 
-    const isDelete: boolean = targetValue === null;
+    const isDelete: boolean = (typeof targetValue === 'undefined') || (targetValue === null);
 
     if (obj.hasOwnProperty(targetProp)) {
         if (isDelete) {
@@ -46,6 +47,7 @@ export const code = {
     notImmediateInithasFn: `console.log('a');</script><script>awa.init({})`
 };
 
+/** Delete one or more properties. */
 export const deleteProp = (prop: string | Array<string>): string => {
     const missiongPropConfig = _.cloneDeep(perfectConfig);
     const props: Array<string> = Array.isArray(prop) ? prop : [prop];
@@ -57,6 +59,7 @@ export const deleteProp = (prop: string | Array<string>): string => {
     return `var config=${JSON.stringify(missiongPropConfig)};`;
 };
 
+/** Modify the value of a (nested property). */
 export const modifyConfigVal = (targetProp: string, targetValue: any): string => {
     const modifiedConfig = _.cloneDeep(perfectConfig);
 
@@ -65,6 +68,12 @@ export const modifyConfigVal = (targetProp: string, targetValue: any): string =>
     return `var config=${JSON.stringify(modifiedConfig)};`;
 };
 
-export const scriptWrapper = (config, initCode: string, includeJSLLScript: boolean = true): string => {
-    return `${includeJSLLScript ? code.jsllScript : ''}<script>${config || ''}${initCode || ''}</script>`;
+export const scriptWrapper = (config: string, initCode: string, includeJSLLScript: boolean = true): string => {
+    let res = `${includeJSLLScript ? code.jsllScript : ''}`;
+
+    if (config || initCode) {
+        res += `<script>${config || ''}${initCode || ''}</script>`;
+    }
+
+    return res;
 };

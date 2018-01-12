@@ -4,11 +4,11 @@
 
 import { Category } from 'sonarwhal/dist/src/lib/enums/category';
 import { RuleContext } from 'sonarwhal/dist/src/lib/rule-context';
-import { IRule, IAsyncHTMLElement, IRuleBuilder, IElementFound, IScriptParse } from 'sonarwhal/dist/src/lib/types';
+import { IRule, IAsyncHTMLElement, IRuleBuilder, IElementFound, IScriptParse, ITraverseUp } from 'sonarwhal/dist/src/lib/types';
 import { debug as d } from 'sonarwhal/dist/src/lib/utils/debug';
 
 import { validateAwaInit } from '../validator';
-import { isJsllDir } from '../utils';
+import { isJsllDir, isHeadElement } from '../utils';
 
 import { Linter } from 'eslint';
 
@@ -85,9 +85,28 @@ const rule: IRuleBuilder = {
             hasJSLLScript = isJsllDir(element);
         };
 
+        const validateInit = async (event: ITraverseUp) => {
+            const { resource }: { resource: string } = event;
+
+            if (!isHeadElement(event.element)) {
+                return;
+            }
+
+            if (hasJSLLScript && (!validated)) {
+                // Should verify init but no script tag was encountered after the JSLL link.
+                // e.g.:
+                // <head>
+                //      <script src="../jsll-4.js"></script>
+                // </head>
+                await context.report(resource, null, `JSLL is not initialized with "awa.init(config)" function. Initialization script should be placed immediately after JSLL script.`);
+            }
+
+        };
+
         return {
             'element::script': enableInitValidate,
-            'parse::javascript': validateScript
+            'parse::javascript': validateScript,
+            'traverse::up': validateInit
         };
     },
     meta: {
