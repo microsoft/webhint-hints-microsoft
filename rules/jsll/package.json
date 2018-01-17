@@ -22,17 +22,17 @@
     "babel-preset-es2017": "^6.22.0",
     "babel-register": "^6.26.0",
     "cpx": "^1.5.0",
-    "eslint": "^4.14.0",
-    "eslint-plugin-markdown": "^1.0.0-beta.7",
+    "eslint": "^4.15.0",
+    "eslint-plugin-markdown": "^1.0.0-beta.6",
     "eslint-plugin-typescript": "^0.8.1",
     "express": "^4.16.2",
     "markdownlint-cli": "^0.6.0",
     "npm-run-all": "^4.1.2",
     "on-headers": "^1.0.1",
     "rimraf": "^2.6.2",
-    "sonarwhal": "^0.22.0",
+    "sonarwhal": "^0.22.1",
     "typescript": "^2.6.2",
-    "typescript-eslint-parser": "^11.0.0"
+    "typescript-eslint-parser": "^12.0.0"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -57,7 +57,7 @@
     "sonarwhal": "node node_modules/sonarwhal/dist/src/bin/sonarwhal.js"
   },
   "peerDependencies": {
-    "sonarwhal": "^0.22.0"
+    "sonarwhal": "^0.22.1"
   },
   "repository": "https://github.com/Microsoft/sonarwhal-microsoft-rules",
   "version": "0.1.0",
