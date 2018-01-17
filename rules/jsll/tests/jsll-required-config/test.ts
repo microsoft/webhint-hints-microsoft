@@ -46,7 +46,7 @@ const tests: Array<IRuleTest> = [
         name: `"awa.init" doesn't have the required parameter "config"`,
         serverConfig: generateHTMLPage(`${scriptWrapper(null, code.noConfigArgs)}`)
     },
-    // All the tests beyond this point should pass, because they will be reported in rule `validate-awa-init`.
+    // All the tests beyond this point should pass, because they will be reported in rule `jsll-awa-init`.
     {
         name: `"config" misses required properties "autoCapture"`,
         reports: [{ message: messages.missingAutoCapture }],

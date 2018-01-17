@@ -1,8 +1,19 @@
 # jsll (`jsll`)
 
-Validate the inclusion and initialization of the JSLL script.
+Validate the inclusion and initialization of the JSLL script via
+multiple related rules.
 
 ## What does the rule check?
+
+JSLL is the analytics library used by Microsoft. This package
+contains the following rules:
+
+* `jsll-script-included`
+* `jsll-awa-init`
+* `jsll-required-config`
+* `jsll-optional-config`
+
+These rules test the following:
 
 * Whether or not the JSLL script has been included.
   * If the script is inlcuded in `<head>`.
@@ -74,7 +85,7 @@ Invalid required/optional properties.
             },
             useShortNameForContentBlob: true
         };
-        awa.init({});
+        awa.init(config);
     </script>
 </head>
 ```
@@ -99,7 +110,7 @@ Invalid required/optional properties.
             },
             useShortNameForContentBlob: true
         };
-        awa.init({});
+        awa.init(config);
     </script>
 </head>
 ```

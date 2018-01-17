@@ -38,7 +38,7 @@ const tests: Array<IRuleTest> = [
         name: `"awa.init" doesn't have any arguments`,
         serverConfig: generateHTMLPage(`${scriptWrapper(null, code.noConfigArgs)}`)
     },
-    // All the tests beyond this point should pass, because they will be reported in rule `validate-awa-init`.
+    // All the tests beyond this point should pass, because they will be reported in rule `jsll-awa-init`.
     {
         name: `"config" misses optional properties`,
         reports: [{ message: messages.missingOptionalConfigProp }],

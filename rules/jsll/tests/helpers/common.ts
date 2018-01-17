@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import * as cloneDeep from 'lodash.cloneDeep';
 
 /** Look for the target property recursively and modify/delete the value */
 export const modifyValue = (obj, targetProp: string, targetValue) => {
@@ -49,7 +49,7 @@ export const code = {
 
 /** Delete one or more properties. */
 export const deleteProp = (prop: string | Array<string>): string => {
-    const missiongPropConfig = _.cloneDeep(perfectConfig);
+    const missiongPropConfig = cloneDeep(perfectConfig);
     const props: Array<string> = Array.isArray(prop) ? prop : [prop];
 
     props.forEach((property) => {
@@ -61,7 +61,7 @@ export const deleteProp = (prop: string | Array<string>): string => {
 
 /** Modify the value of a (nested property). */
 export const modifyConfigVal = (targetProp: string, targetValue: any): string => {
-    const modifiedConfig = _.cloneDeep(perfectConfig);
+    const modifiedConfig = cloneDeep(perfectConfig);
 
     modifyValue(modifiedConfig, targetProp, targetValue);
 

@@ -3,10 +3,10 @@
  */
 import { Category } from 'sonarwhal/dist/src/lib/enums/category';
 import { RuleContext } from 'sonarwhal/dist/src/lib/rule-context';
-import { IAsyncHTMLElement, IRule, IRuleBuilder, IElementFound, ITraverseUp, ITraverseDown, Severity } from 'sonarwhal/dist/src/lib/types';
+import { IAsyncHTMLElement, IRule, IRuleBuilder, IElementFound, ITraverseUp, Severity } from 'sonarwhal/dist/src/lib/types';
 import { normalizeString } from 'sonarwhal/dist/src/lib/utils/misc';
 
-import { isJsllDir, isHeadElement } from '../utils';
+import { isJsllDir } from '../utils';
 
 /*
  * ------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ const rule: IRuleBuilder = {
         const wrongScriptOrderMsg: string = `The JSLL script isn't placed prior to other scripts.`;
 
         const jsllDir: string = `https://az725175.vo.msecnd.net/scripts/jsll-`;
-        let isHead: boolean = false; // Flag to indicate if script is in head.
+        let isHead: boolean = true; // Flag to indicate if script is in head.
         let totalHeadScriptCount: number = 0; // Total number of script tags in head.
         let jsllScriptCount: number = 0; // Total number of JSLL script tag in head.
 
@@ -75,20 +75,8 @@ const rule: IRuleBuilder = {
             return;
         };
 
-        const traverseDown = (event: ITraverseDown) => {
-            if (!isHeadElement(event.element)) {
-                return;
-            }
-
-            isHead = true;
-        };
-
-        const traverseUp = async (event: ITraverseUp) => {
+        const enterBody = async (event: ITraverseUp) => {
             const { resource }: { resource: string } = event;
-
-            if (!isHeadElement(event.element)) {
-                return;
-            }
 
             if (jsllScriptCount === 0) {
                 await context.report(resource, null, noScriptInHeadMsg);
@@ -100,9 +88,8 @@ const rule: IRuleBuilder = {
         };
 
         return {
-            'element::script': validateScript,
-            'traverse::down': traverseDown,
-            'traverse::up': traverseUp
+            'element::body': enterBody,
+            'element::script': validateScript
         };
     },
     meta: {

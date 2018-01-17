@@ -25,7 +25,7 @@ const rule: IRuleBuilder = {
         const linter = new Linter();
         let hasJSLLScript: boolean = false; // If link to JSLL scripts has been included.
 
-        linter.defineRule('validate-required-config', {
+        linter.defineRule('jsll-required-config', {
             create(eslintContext) {
                 let isFirstExpressionStatement = true;
 
@@ -56,7 +56,7 @@ const rule: IRuleBuilder = {
                 return;
             }
 
-            const results = linter.verify(scriptParse.sourceCode, { rules: { 'validate-required-config': 'warn' } });
+            const results = linter.verify(scriptParse.sourceCode, { rules: { 'jsll-required-config': 'warn' } });
 
             hasJSLLScript = false;
             // Only the script included immediately after the JSLL link needs to be validated.

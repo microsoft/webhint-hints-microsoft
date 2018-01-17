@@ -42,11 +42,11 @@
     "sonarwhal"
   ],
   "main": "dist/src/index.js",
-  "name": "@sonarwhal/rule-jsll",
+  "name": "sonarwhal-rule-jsll",
   "scripts": {
     "build": "npm run clean && npm-run-all build:*",
     "build:assets": "cpx \"./{src,tests}/**/{!(*.ts),.!(ts)}\" dist",
-    "build:ts": "tsc --outDir dist",
+    "build:ts": "tsc --outDir \"./dist\" --rootDir .",
     "clean": "rimraf dist",
     "test": "npm run lint && npm run build && ava",
     "lint": "npm-run-all lint:*",
@@ -59,10 +59,10 @@
   "peerDependencies": {
     "sonarwhal": "^0.22.0"
   },
-  "repository": "",
+  "repository": "https://github.com/Microsoft/sonarwhal-microsoft-rules",
   "version": "0.1.0",
   "dependencies": {
     "locale-code": "^1.1.1",
-    "lodash": "^4.17.4"
+    "lodash.clonedeep": "^4.5.0"
   }
 }

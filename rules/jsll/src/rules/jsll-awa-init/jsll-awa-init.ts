@@ -26,7 +26,7 @@ const rule: IRuleBuilder = {
         let validated: boolean = false; // If `validateAwaInit` has run.
         let hasJSLLScript: boolean = false; // If link to JSLL scripts has been included.
 
-        linter.defineRule('validate-awa-init', {
+        linter.defineRule('jsll-awa-init', {
             create(eslintContext) {
                 let isFirstExpressionStatement: boolean = true;
 
@@ -53,7 +53,6 @@ const rule: IRuleBuilder = {
                         }
                     }
                 };
-
             }
         });
 
@@ -62,7 +61,7 @@ const rule: IRuleBuilder = {
                 return;
             }
 
-            const results = linter.verify(scriptParse.sourceCode, { rules: { 'validate-awa-init': 'error' } });
+            const results = linter.verify(scriptParse.sourceCode, { rules: { 'jsll-awa-init': 'error' } });
 
             hasJSLLScript = false;
             // Only validates the script included immediately after the JSLL link.

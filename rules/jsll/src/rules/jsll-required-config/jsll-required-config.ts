@@ -25,7 +25,7 @@ const rule: IRuleBuilder = {
         const linter = new Linter();
         let initValidate = false; // If JSLL initialization should be verified, only the script immediately after the JSLL should be verified.
 
-        linter.defineRule('validate-required-config', {
+        linter.defineRule('jsll-required-config', {
             create(eslintContext) {
                 let isFirstExpressionStatement = true;
 
@@ -57,7 +57,7 @@ const rule: IRuleBuilder = {
                 return;
             }
 
-            const results = linter.verify(scriptParse.sourceCode, { rules: { 'validate-required-config': 'error' } });
+            const results = linter.verify(scriptParse.sourceCode, { rules: { 'jsll-required-config': 'error' } });
 
             initValidate = false;
             // Only the script included immediately after the JSLL link needs to be validated.
