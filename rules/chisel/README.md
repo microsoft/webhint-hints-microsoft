@@ -1,6 +1,10 @@
-# chisel (`chisel`)
+# Chisel (`chisel`)
 
 Use Chisel to assess the accessibility of a web site or web application.
+
+In order to install this rule you need to be a Microsoft employee and
+have access to the `chisel` registry, otherwise you'll have errors during
+the installation.
 
 ## Can the rule be configured?
 

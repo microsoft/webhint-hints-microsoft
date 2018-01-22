@@ -1,5 +1,5 @@
 {
-  "author": "",
+  "author": "Microsoft",
   "ava": {
     "babel": {
       "presets": []
@@ -11,7 +11,10 @@
     ],
     "timeout": "1m"
   },
-  "description": "Use Chisel to assess the accessibility of web sites and web applications",
+  "dependencies": {
+    "@mskeros/chisel": "^1.130.1"
+  },
+  "description": "sonarwhal rule to assess the accessibility of a web site using Microsoft's Chisel.",
   "devDependencies": {
     "@types/debug": "0.0.30",
     "@types/node": "8.0.14",
@@ -30,23 +33,35 @@
     "npm-run-all": "^4.1.2",
     "on-headers": "^1.0.1",
     "rimraf": "^2.6.2",
-    "sonarwhal": "^0.22.1",
+    "sonarwhal": "^0.23.1",
     "typescript": "^2.6.2",
     "typescript-eslint-parser": "^12.0.0"
   },
   "engines": {
     "node": ">=8.0.0"
   },
-  "keywords": [
-    "rule",
-    "sonarwhal"
+  "files": [
+    "dist/src",
+    "npm-shrinkwrap.json"
   ],
+  "homepage": "https://sonarwhal.com",
+  "keywords": [
+    "chisel",
+    "rule",
+    "sonarwhal",
+    "sonarwhal-chisel"
+  ],
+  "license": "Apache-2.0",
   "main": "dist/src/index.js",
-  "name": "@sonarwhal/rule-chisel",
+  "name": "sonarwhal-rule-chisel",
+  "peerDependencies": {
+    "sonarwhal": "^0.23.1"
+  },
+  "repository": "Microsoft/sonarwhal-microsoft-rules",
   "scripts": {
     "build": "npm run clean && npm-run-all build:*",
     "build:assets": "cpx \"./{src,tests}/**/{!(*.ts),.!(ts)}\" dist",
-    "build:ts": "tsc --outDir dist --rootDir .",
+    "build:ts": "tsc --outDir \"./dist\"",
     "clean": "rimraf dist",
     "test": "npm run lint && npm run build && ava",
     "lint": "npm-run-all lint:*",
@@ -56,12 +71,5 @@
     "init": "npm install && npm run build",
     "sonarwhal": "node node_modules/sonarwhal/dist/src/bin/sonarwhal.js"
   },
-  "peerDependencies": {
-    "sonarwhal": "^0.22.1"
-  },
-  "dependencies": {
-    "@mskeros/chisel": "^1.127.2"
-  },
-  "repository": "https://github.com/Microsoft/sonarwhal-microsoft-rules",
   "version": "0.1.0"
 }

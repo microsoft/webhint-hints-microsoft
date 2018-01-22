@@ -1,3 +1,12 @@
+# Microsoft sonarwhal rules
+
+This repository contains rules specific to Microsoft projects.
+
+To know more about each rule package, visit their respective `readme.md`:
+
+* [chisel](./rules/chisel/README.md)
+* [jsll](./rules/jsll/README.md)
+
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a

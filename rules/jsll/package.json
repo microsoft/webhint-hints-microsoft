@@ -1,5 +1,5 @@
 {
-  "author": "",
+  "author": "Microsoft",
   "ava": {
     "babel": {
       "presets": []
@@ -11,7 +11,11 @@
     ],
     "timeout": "1m"
   },
-  "description": "Validate the initialization of the JSLL script.",
+  "dependencies": {
+    "locale-code": "^1.1.1",
+    "lodash.clonedeep": "^4.5.0"
+  },
+  "description": "sonarwhal rule to validate Microsoft's JSLL configuration.",
   "devDependencies": {
     "@types/debug": "0.0.30",
     "@types/node": "8.0.14",
@@ -30,23 +34,34 @@
     "npm-run-all": "^4.1.2",
     "on-headers": "^1.0.1",
     "rimraf": "^2.6.2",
-    "sonarwhal": "^0.22.1",
+    "sonarwhal": "^0.23.1",
     "typescript": "^2.6.2",
     "typescript-eslint-parser": "^12.0.0"
   },
   "engines": {
     "node": ">=8.0.0"
   },
-  "keywords": [
-    "rule",
-    "sonarwhal"
+  "files": [
+    "dist/src",
+    "npm-shrinkwrap.json"
   ],
+  "homepage": "https://sonarwhal.com",
+  "keywords": [
+    "jsll",
+    "rule",
+    "sonarwhal",
+    "sonarwhal-rule"
+  ],
+  "license": "Apache-2.0",
   "main": "dist/src/index.js",
   "name": "sonarwhal-rule-jsll",
+  "peerDependencies": {
+    "sonarwhal": "^0.23.1"
+  },
   "scripts": {
     "build": "npm run clean && npm-run-all build:*",
     "build:assets": "cpx \"./{src,tests}/**/{!(*.ts),.!(ts)}\" dist",
-    "build:ts": "tsc --outDir \"./dist\" --rootDir .",
+    "build:ts": "tsc --outDir \"./dist\"",
     "clean": "rimraf dist",
     "test": "npm run lint && npm run build && ava",
     "lint": "npm-run-all lint:*",
@@ -56,13 +71,6 @@
     "init": "npm install && npm run build",
     "sonarwhal": "node node_modules/sonarwhal/dist/src/bin/sonarwhal.js"
   },
-  "peerDependencies": {
-    "sonarwhal": "^0.22.1"
-  },
-  "repository": "https://github.com/Microsoft/sonarwhal-microsoft-rules",
-  "version": "0.1.0",
-  "dependencies": {
-    "locale-code": "^1.1.1",
-    "lodash.clonedeep": "^4.5.0"
-  }
+  "repository": "Microsoft/sonarwhal-microsoft-rules",
+  "version": "0.1.0"
 }
