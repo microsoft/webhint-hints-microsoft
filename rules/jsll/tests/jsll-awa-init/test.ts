@@ -28,6 +28,11 @@ const tests: Array<IRuleTest> = [
         serverConfig: generateHTMLPage(`${scriptWrapper(null, code.notImmediateInithasFn)}`)
     },
     {
+        name: `The init script is in <body> instead of <head>`,
+        reports: [{ message: messages.noInit }],
+        serverConfig: generateHTMLPage(code.jsllScript, `${scriptWrapper(null, code.emptyObjconfig)}`)
+    },
+    {
         name: `"awa.init" doesn't have the required parameter "config"`,
         reports: [{ message: messages.noConfigArgs }],
         serverConfig: generateHTMLPage(`${scriptWrapper(null, code.noConfigArgs)}`)

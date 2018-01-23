@@ -1,7 +1,7 @@
 import { IAsyncHTMLElement } from 'sonarwhal/dist/src/lib/types';
 import { normalizeString } from 'sonarwhal/dist/src/lib/utils/misc';
 
-const jsllDir = `https://az725175.vo.msecnd.net/scripts/jsll-`;
+const jsllDir = `az725175.vo.msecnd.net/scripts/jsll-`;
 
 const severityMatch = (parentObj: object, prop: string, severity: string) => {
     return parentObj[severity].includes(prop);
@@ -31,7 +31,7 @@ const isJsllDir = (element: IAsyncHTMLElement) => {
         return false;
     }
 
-    return normalizeString(src).startsWith(jsllDir);
+    return normalizeString(src).includes(jsllDir);
 };
 
 const isHeadElement = (element: IAsyncHTMLElement): boolean => {

@@ -4,11 +4,11 @@
 
 import { Category } from 'sonarwhal/dist/src/lib/enums/category';
 import { RuleContext } from 'sonarwhal/dist/src/lib/rule-context';
-import { IRule, IAsyncHTMLElement, IRuleBuilder, IElementFound, IScriptParse, ITraverseUp } from 'sonarwhal/dist/src/lib/types';
+import { IRule, IAsyncHTMLElement, IRuleBuilder, IElementFound, IScriptParse } from 'sonarwhal/dist/src/lib/types';
 import { debug as d } from 'sonarwhal/dist/src/lib/utils/debug';
 
 import { validateAwaInit } from '../validator';
-import { isJsllDir, isHeadElement } from '../utils';
+import { isJsllDir } from '../utils';
 
 import { Linter } from 'eslint';
 
@@ -23,6 +23,7 @@ const debug: debug.IDebugger = d(__filename);
 const rule: IRuleBuilder = {
     create(context: RuleContext): IRule {
         const linter = new Linter();
+        let isHead: boolean = true;
         let validated: boolean = false; // If `validateAwaInit` has run.
         let hasJSLLScript: boolean = false; // If link to JSLL scripts has been included.
 
@@ -57,7 +58,7 @@ const rule: IRuleBuilder = {
         });
 
         const validateScript = async (scriptParse: IScriptParse) => {
-            if (!hasJSLLScript) {
+            if (!hasJSLLScript || !isHead) {
                 return;
             }
 
@@ -84,12 +85,10 @@ const rule: IRuleBuilder = {
             hasJSLLScript = isJsllDir(element);
         };
 
-        const validateInit = async (event: ITraverseUp) => {
+        const enterBody = async (event: IElementFound) => {
             const { resource }: { resource: string } = event;
 
-            if (!isHeadElement(event.element)) {
-                return;
-            }
+            isHead = false;
 
             if (hasJSLLScript && (!validated)) {
                 // Should verify init but no script tag was encountered after the JSLL link.
@@ -103,9 +102,9 @@ const rule: IRuleBuilder = {
         };
 
         return {
+            'element::body': enterBody,
             'element::script': enableInitValidate,
-            'parse::javascript': validateScript,
-            'traverse::up': validateInit
+            'parse::javascript': validateScript
         };
     },
     meta: {

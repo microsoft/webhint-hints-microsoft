@@ -3,7 +3,7 @@
  */
 import { Category } from 'sonarwhal/dist/src/lib/enums/category';
 import { RuleContext } from 'sonarwhal/dist/src/lib/rule-context';
-import { IAsyncHTMLElement, IRule, IRuleBuilder, IElementFound, ITraverseUp, Severity } from 'sonarwhal/dist/src/lib/types';
+import { IAsyncHTMLElement, IRule, IRuleBuilder, IElementFound, Severity } from 'sonarwhal/dist/src/lib/types';
 import { normalizeString } from 'sonarwhal/dist/src/lib/utils/misc';
 
 import { isJsllDir } from '../utils';
@@ -75,7 +75,7 @@ const rule: IRuleBuilder = {
             return;
         };
 
-        const enterBody = async (event: ITraverseUp) => {
+        const enterBody = async (event: IElementFound) => {
             const { resource }: { resource: string } = event;
 
             if (jsllScriptCount === 0) {
