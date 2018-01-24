@@ -134,16 +134,40 @@ export const isPotentialInitScript = (sourceCode) => {
     return regex.test(sourceCode.text);
 };
 
+/** Tell if a expression statement is `awa.init` or `window.awa.init` */
+const isInitCode = (expression) => {
+    const { callee } = expression;
+
+    if (callee && callee.object) {
+        const callInitProp = callee.property && callee.property.name === 'init';
+
+        if ((callee.object.name === 'awa') && callInitProp) {
+            // awa.init(...)
+            return true;
+        }
+
+        const subObject = callee.object.object;
+
+        if (callee.object.object) {
+            // window.awa.init(...)
+            const callAwa = subObject.name === 'window' && callee.object.property.name === 'awa';
+
+            return callAwa && callInitProp;
+        }
+    }
+
+    return false;
+};
+
 /** Validate the initialization of JSLL using `awa.init(config)`. */
 export const validateAwaInit = (node, eslintContext, report: boolean, isFirstExpression?: boolean) => {
     const expression = node.expression;
     const scope = eslintContext.getScope();
     const variables = scope.variables;
-    const { callee } = expression;
     let configNode;
-    const isNotInitCode = !callee || !callee.object || callee.object.name !== 'awa' || callee.property.name !== 'init';
+    const isInit = isInitCode(expression);
 
-    if (isNotInitCode) {
+    if (!isInit) {
         if (isFirstExpression && report) {
             eslintContext.report(node, '"awa.init(config)" is not called as soon as possible.');
         }
@@ -173,7 +197,9 @@ export const validateAwaInit = (node, eslintContext, report: boolean, isFirstExp
 
     if (!['Identifier', 'ObjectExpression'].includes(configVal.type)) {
         if (report) {
-            eslintContext.report(configVal, `The argument of "awa.init" is not of type Object.`);
+            const msg = `The config argument of "awa.init" is not an object or the declaration of the config variable can't be found.`;
+
+            eslintContext.report(configVal, msg);
         }
 
         return null;

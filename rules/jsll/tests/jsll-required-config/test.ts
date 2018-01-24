@@ -39,6 +39,15 @@ const tests: Array<IRuleTest> = [
         serverConfig: generateHTMLPage(`${scriptWrapper(deleteProp('appId'), code.initConfig, false)}`)
     },
     {
+        name: `'window.awa.init' is called instead of 'awa.init', and the config is valid`,
+        serverConfig: generateHTMLPage(`${scriptWrapper(`var config=${JSON.stringify(code.perfectConfig)};`, 'window.awa.init(config);')}`)
+    },
+    {
+        name: `'window.awa.init' is called instead of 'awa.init', and the config is not valid`,
+        reports: [{ message: messages.missingAppId }],
+        serverConfig: generateHTMLPage(`${scriptWrapper(deleteProp('appId'), 'window.awa.init(config);')}`)
+    },
+    {
         name: `The init code is not the first expression statement in the init script`,
         reports: [{ message: messages.missingAppId }],
         serverConfig: generateHTMLPage(`${scriptWrapper(deleteProp('appId'), `console.log('jsll');${code.initConfig}`)}`)

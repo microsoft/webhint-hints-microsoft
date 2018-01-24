@@ -32,6 +32,15 @@ const tests: Array<IRuleTest> = [
         serverConfig: generateHTMLPage(`${scriptWrapper(null, code.notImmediateInithasFn)}`)
     },
     {
+        name: `'window.awa.init' is called instead of 'awa.init', and the config is valid`,
+        serverConfig: generateHTMLPage(`${scriptWrapper(`var config=${JSON.stringify(code.perfectConfig)};`, 'window.awa.init(config);')}`)
+    },
+    {
+        name: `'window.awa.init' is called instead of 'awa.init', and the config is not valid`,
+        reports: [{ message: messages.notCallASAP }],
+        serverConfig: generateHTMLPage(`${scriptWrapper(`var config=${JSON.stringify(code.perfectConfig)};`, `console.log('adsf');window.awa.init({})`)}`)
+    },
+    {
         name: `The init script is in <body> instead of <head>`,
         reports: [{ message: messages.noInit }, { message: messages.notInHead }],
         serverConfig: generateHTMLPage(code.jsllScript, `${scriptWrapper(null, code.emptyObjconfig)}`)
