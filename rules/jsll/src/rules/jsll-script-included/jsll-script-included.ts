@@ -51,7 +51,7 @@ const rule: IRuleBuilder = {
                 return;
             }
 
-            if (totalHeadScriptCount > 1) {
+            if (totalHeadScriptCount > 1 && (jsllScriptCount === 1)) {
                 // There are other scripts in <head> prior to this JSLL script.
                 await context.report(resource, element, wrongScriptOrderMsg);
 
@@ -78,13 +78,13 @@ const rule: IRuleBuilder = {
         const enterBody = async (event: IElementFound) => {
             const { resource }: { resource: string } = event;
 
+            isHead = false;
+
             if (jsllScriptCount === 0) {
                 await context.report(resource, null, noScriptInHeadMsg);
 
                 return;
             }
-
-            isHead = false;
         };
 
         return {

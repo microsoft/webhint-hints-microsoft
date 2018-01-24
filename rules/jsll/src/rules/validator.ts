@@ -120,6 +120,20 @@ const validateMarket = (property, eslintContext, severity: string) => {
     }
 };
 
+/** Guess if a script is a JSLL init script. */
+export const isPotentialInitScript = (sourceCode) => {
+    const regex = /awa.init\([{*[\s\S]*?}*\)/i;
+    // Pass:
+    // awa.init(config)
+    // awa.init(config1)
+    // awa.init({ id: 1, name: {} })
+    // awa.init({})
+    // Fail:
+    // awa.init=function()...
+
+    return regex.test(sourceCode.text);
+};
+
 /** Validate the initialization of JSLL using `awa.init(config)`. */
 export const validateAwaInit = (node, eslintContext, report: boolean) => {
     const expression = node.expression;
@@ -130,7 +144,7 @@ export const validateAwaInit = (node, eslintContext, report: boolean) => {
 
     if (!callee || !callee.object || callee.object.name !== 'awa' || callee.property.name !== 'init') {
         if (report) {
-            eslintContext.report(node, 'JSLL is not initialized with "awa.init(config)" function. Initialization script should be placed immediately after JSLL script.');
+            eslintContext.report(node, '"awa.init(config)" is not called as soon as possible.');
         }
 
         return null;
