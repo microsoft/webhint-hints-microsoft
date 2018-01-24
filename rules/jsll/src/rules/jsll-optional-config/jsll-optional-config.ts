@@ -7,7 +7,7 @@ import { RuleContext } from 'sonarwhal/dist/src/lib/rule-context';
 import { IRule, IAsyncHTMLElement, IRuleBuilder, IElementFound, IScriptParse } from 'sonarwhal/dist/src/lib/types';
 import { debug as d } from 'sonarwhal/dist/src/lib/utils/debug';
 
-import { validateNodeProps, validateAwaInit, configProps } from '../validator';
+import { validateNodeProps, validateAwaInit, configProps, isPotentialInitScript } from '../validator';
 import { isJsllDir } from '../utils';
 
 import { Linter } from 'eslint';
@@ -31,12 +31,9 @@ const rule: IRuleBuilder = {
 
                 return {
                     ExpressionStatement(node) {
-                        if (!isFirstExpressionStatement) { // Only the first expression statement should be checked.
-                            return;
-                        }
+                        const configNode = validateAwaInit(node, eslintContext, false, isFirstExpressionStatement);
 
                         isFirstExpressionStatement = false;
-                        const configNode = validateAwaInit(node, eslintContext, false);
 
                         if (!configNode) {
                             return;
@@ -52,7 +49,9 @@ const rule: IRuleBuilder = {
         });
 
         const validateScript = async (scriptParse: IScriptParse) => {
-            if (!hasJSLLScript) {
+            const sourceCode = scriptParse.sourceCode;
+
+            if (!isPotentialInitScript(sourceCode)) {
                 return;
             }
 

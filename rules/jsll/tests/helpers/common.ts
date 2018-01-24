@@ -44,7 +44,8 @@ export const code = {
     jsllScript: `<script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js" type="text/javascript"></script>`,
     noConfigArgs: `awa.init();`,
     notImmediateInitNoFn: `var a = 1;</script><script>awa.init({})`,
-    notImmediateInithasFn: `console.log('a');</script><script>awa.init({})`
+    notImmediateInithasFn: `console.log('a');</script><script>awa.init({})`,
+    perfectConfig
 };
 
 /** Delete one or more properties. */

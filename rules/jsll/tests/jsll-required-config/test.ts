@@ -30,23 +30,36 @@ const stringPropertyConfig = {
 
 const tests: Array<IRuleTest> = [
     {
-        // Validate init shouldn't run if the JSLL script link is not included.
-        name: `The JSLL script itself was not included`,
-        serverConfig: generateHTMLPage(`${scriptWrapper(null, code.notImmediateInithasFn, false)}`)
+        name: `The JSLL script itself was not included and the config is valid`,
+        serverConfig: generateHTMLPage(`${scriptWrapper(`var config=${JSON.stringify(code.perfectConfig)};`, code.initConfig, false)}`)
     },
     {
-        name: `The script following JSLL script doesn't include code that initializes JSLL, and the spacer script has no function calls`,
-        serverConfig: generateHTMLPage(`${scriptWrapper(null, code.notImmediateInitNoFn)}`)
+        name: `The JSLL script itself was not included but the config is not valid`,
+        reports: [{ message: messages.missingAppId }],
+        serverConfig: generateHTMLPage(`${scriptWrapper(deleteProp('appId'), code.initConfig, false)}`)
     },
     {
-        name: `The script following JSLL script doesn't include code that initializes JSLL, and the spacer script has function calls`,
-        serverConfig: generateHTMLPage(`${scriptWrapper(null, code.notImmediateInithasFn)}`)
+        name: `The init code is not the first expression statement in the init script`,
+        reports: [{ message: messages.missingAppId }],
+        serverConfig: generateHTMLPage(`${scriptWrapper(deleteProp('appId'), `console.log('jsll');${code.initConfig}`)}`)
+    },
+    {
+        name: `The config code is not the first variable defined in the init script`,
+        reports: [{ message: messages.missingAppId }],
+        serverConfig: generateHTMLPage(`${scriptWrapper(`var a = 1;${deleteProp('appId')}`, `${code.initConfig}`)}`)
+    },
+    {
+        name: `The init script is an external script and the config is not valid'`,
+        reports: [{ message: messages.missingRequiredConfigProps }],
+        serverConfig: {
+            '/': generateHTMLPage(`${code.jsllScript}<script src="init.js"></script>`),
+            '/init.js': { content: `console.log('adsf');${code.emptyObjconfig}` }
+        }
     },
     {
         name: `"awa.init" doesn't have the required parameter "config"`,
         serverConfig: generateHTMLPage(`${scriptWrapper(null, code.noConfigArgs)}`)
     },
-    // All the tests beyond this point should pass, because they will be reported in rule `jsll-awa-init`.
     {
         name: `"config" misses required properties "autoCapture"`,
         reports: [{ message: messages.missingAutoCapture }],

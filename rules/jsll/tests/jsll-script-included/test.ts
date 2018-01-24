@@ -40,9 +40,13 @@ const tests: Array<IRuleTest> = [
         serverConfig: generateHTMLPage(generateScript(redundantScriptLinks))
     },
     {
-        name: 'JSLL script locates in the <body> tag instead of the <head> tag',
-        reports: [{ message: noScriptInHeadMsg }],
-        serverConfig: generateHTMLPage(null, generateScript(simpleVersionLink))
+        name: 'JSLL script is not placed prior to other scripts',
+        reports: [{ message: wrongScriptOrderMsg }],
+        serverConfig: generateHTMLPage(generateScript(wrongScriptOrderLinks))
+    },
+    {
+        name: 'JSLL script placed prior to other scripts',
+        serverConfig: generateHTMLPage(generateScript(wrongScriptOrderLinks.reverse()))
     },
     {
         name: 'JSLL script name has the specified version format',
@@ -55,13 +59,9 @@ const tests: Array<IRuleTest> = [
         serverConfig: generateHTMLPage(generateScript(invalidVersionLink))
     },
     {
-        name: 'JSLL script is not placed prior to other scripts',
-        reports: [{ message: wrongScriptOrderMsg }],
-        serverConfig: generateHTMLPage(generateScript(wrongScriptOrderLinks))
-    },
-    {
-        name: 'JSLL script placed prior to other scripts',
-        serverConfig: generateHTMLPage(generateScript(wrongScriptOrderLinks.reverse()))
+        name: 'JSLL script locates in the <body> tag instead of the <head> tag',
+        reports: [{ message: noScriptInHeadMsg }],
+        serverConfig: generateHTMLPage(null, generateScript(simpleVersionLink))
     }
 ];
 

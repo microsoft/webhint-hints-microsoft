@@ -35,12 +35,8 @@ const rule: IRuleBuilder = {
 
                 return {
                     ExpressionStatement(node) {
-                        if (!isFirstExpressionStatement) { // Only the first expression statement should be checked.
-                            return;
-                        }
-
+                        validateAwaInit(node, eslintContext, true, isFirstExpressionStatement);
                         isFirstExpressionStatement = false;
-                        validateAwaInit(node, eslintContext, true);
                         validated = true;
                     }
                 };

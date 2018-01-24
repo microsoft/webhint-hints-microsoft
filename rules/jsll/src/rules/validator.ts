@@ -135,19 +135,20 @@ export const isPotentialInitScript = (sourceCode) => {
 };
 
 /** Validate the initialization of JSLL using `awa.init(config)`. */
-export const validateAwaInit = (node, eslintContext, report: boolean) => {
+export const validateAwaInit = (node, eslintContext, report: boolean, isFirstExpression?: boolean) => {
     const expression = node.expression;
     const scope = eslintContext.getScope();
     const variables = scope.variables;
     const { callee } = expression;
     let configNode;
+    const isNotInitCode = !callee || !callee.object || callee.object.name !== 'awa' || callee.property.name !== 'init';
 
-    if (!callee || !callee.object || callee.object.name !== 'awa' || callee.property.name !== 'init') {
-        if (report) {
+    if (isNotInitCode) {
+        if (isFirstExpression && report) {
             eslintContext.report(node, '"awa.init(config)" is not called as soon as possible.');
         }
 
-        return null;
+        return null; // This line of code doesn't include `awa.init`, so not validate.
     }
 
     const initArgs = expression.arguments;
