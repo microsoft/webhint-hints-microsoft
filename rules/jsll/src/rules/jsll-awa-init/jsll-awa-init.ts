@@ -4,11 +4,11 @@
 
 import { Category } from 'sonarwhal/dist/src/lib/enums/category';
 import { RuleContext } from 'sonarwhal/dist/src/lib/rule-context';
-import { IRule, IAsyncHTMLElement, IRuleBuilder, IElementFound, IScriptParse, ITraverseUp } from 'sonarwhal/dist/src/lib/types';
+import { IRule, IAsyncHTMLElement, IRuleBuilder, IElementFound, IScriptParse } from 'sonarwhal/dist/src/lib/types';
 import { debug as d } from 'sonarwhal/dist/src/lib/utils/debug';
 
 import { isPotentialInitScript, validateAwaInit } from '../validator';
-import { isHeadElement, isJsllDir } from '../utils';
+import { isJsllDir } from '../utils';
 
 import { Linter } from 'eslint';
 
@@ -99,28 +99,26 @@ const rule: IRuleBuilder = {
             traverseStarts = true;
         };
 
-        const traverseUpHead = async (data: ITraverseUp) => {
-            const { resource, element }: { resource: string, element: IAsyncHTMLElement } = data;
+        const enterBody = async (data: IElementFound) => {
+            const { resource }: { resource: string, element: IAsyncHTMLElement } = data;
 
-            if (isHeadElement(element)) {
-                isHead = false;
+            isHead = false;
 
-                if (!validated) {
-                    // Should verify init but no script tag was encountered after the JSLL link.
-                    // e.g.:
-                    // <head>
-                    //      <script src="../jsll-4.js"></script>
-                    // </head>
-                    await context.report(resource, null, `JSLL is not initialized with "awa.init(config)" function in <head>. Initialization script should be placed immediately after JSLL script.`);
-                }
+            if (!validated) {
+                // Should verify init but no script tag was encountered after the JSLL link.
+                // e.g.:
+                // <head>
+                //      <script src="../jsll-4.js"></script>
+                // </head>
+                await context.report(resource, null, `JSLL is not initialized with "awa.init(config)" function in <head>. Initialization script should be placed immediately after JSLL script.`);
             }
         };
 
         return {
+            'element::body': enterBody,
             'element::script': updateImmedateAfterJSLLScript,
             'parse::javascript': validateScript,
-            'traverse::start': updateTraverseStart,
-            'traverse::up': traverseUpHead
+            'traverse::start': updateTraverseStart
         };
     },
     meta: {
@@ -128,6 +126,7 @@ const rule: IRuleBuilder = {
             category: Category.other,
             description: `Validate the use of 'awa.init' to initialize the JSLL script.`
         },
+        ignoredConnectors: ['jsdom'],
         recommended: false,
         schema: [],
         worksWithLocalFiles: true
