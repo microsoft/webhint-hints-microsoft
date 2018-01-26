@@ -9,14 +9,15 @@ const ruleName = getRuleName(__dirname);
 const messages = {
     noConfigArgs: `JSLL initialization function "awa.init(config)" missing required parameter "config".`,
     noInit: `JSLL is not initialized with "awa.init(config)" function in <head>. Initialization script should be placed immediately after JSLL script.`,
-    notCallASAP: `"awa.init(config)" is not called as soon as possible.`,
+    notCallASAP: `"awa.init" is not called as soon as possible.`,
     notImmediateAfter: `The JSLL init script should be immediately following the JSLL script.`,
-    notInHead: `The JSLL init script should be in <head>.`
+    notInHead: `The JSLL init script should be in <head>.`,
+    undefinedConfig: `The variable passed to "awa.init" is not defined.`
 };
 
 const tests: Array<IRuleTest> = [
     {
-        // Validate init should still run if the JSLL script link is not included.
+        // Validate init should still run even if the JSLL script link is not included.
         name: `The JSLL script itself was not included`,
         reports: [{ message: messages.notImmediateAfter }],
         serverConfig: generateHTMLPage(`${scriptWrapper(null, code.notImmediateInithasFn, false)}`)
@@ -32,13 +33,30 @@ const tests: Array<IRuleTest> = [
         serverConfig: generateHTMLPage(`${scriptWrapper(null, code.notImmediateInithasFn)}`)
     },
     {
-        name: `'window.awa.init' is called instead of 'awa.init', and the config is valid`,
+        name: `'window.awa.init' is called instead of 'awa.init', and called ASAP in the script`,
         serverConfig: generateHTMLPage(`${scriptWrapper(`var config=${JSON.stringify(code.perfectConfig)};`, 'window.awa.init(config);')}`)
     },
     {
-        name: `'window.awa.init' is called instead of 'awa.init', and the config is not valid`,
+        name: `'window.awa.init' is called instead of 'awa.init', but not called ASAP in the script`,
         reports: [{ message: messages.notCallASAP }],
         serverConfig: generateHTMLPage(`${scriptWrapper(`var config=${JSON.stringify(code.perfectConfig)};`, `console.log('adsf');window.awa.init({})`)}`)
+    },
+    {
+        // <head>
+        //      <script src="../jsll-4.js"></script>
+        // </head>
+        name: `The init script is not included, and no script tages are encountered after the JSLL script link`,
+        reports: [{ message: messages.noInit }],
+        serverConfig: generateHTMLPage(`${scriptWrapper(null, null, true)}`)
+    },
+    {
+        // <head>
+        //      <script src="../jsll-4.js"></script>
+        //      <script>console.log('jsll')</script>
+        // </head>
+        name: `The init script is not included, but other script tages are encountered after the JSLL script link`,
+        reports: [{ message: messages.noInit }],
+        serverConfig: generateHTMLPage(`${scriptWrapper(null, `console.log('jsll')`, true)}`)
     },
     {
         name: `The init script is in <body> instead of <head>`,
@@ -59,21 +77,9 @@ const tests: Array<IRuleTest> = [
         }
     },
     {
-        name: `"awa.init" doesn't have the required parameter "config"`,
-        reports: [{ message: messages.noConfigArgs }],
-        serverConfig: generateHTMLPage(`${scriptWrapper(null, code.noConfigArgs)}`)
-    },
-    {
-        name: `"awa.init" has an empty object as config parameter`,
-        serverConfig: generateHTMLPage(`${scriptWrapper(null, code.emptyObjconfig)}`)
-    },
-    {
-        // <head>
-        //      <script src="../jsll-4.js"></script>
-        // </head>
-        name: `No script tages are encountered after the JSLL script link`,
-        reports: [{ message: messages.noInit }],
-        serverConfig: generateHTMLPage(`${scriptWrapper(null, null, true)}`)
+        name: '"config" is passed to "awa.init", but "config" is not defined',
+        reports: [{ message: messages.undefinedConfig }],
+        serverConfig: generateHTMLPage(`${scriptWrapper(null, code.initConfig)}`)
     }
 ];
 

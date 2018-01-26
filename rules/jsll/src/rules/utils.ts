@@ -11,17 +11,15 @@ const pluralizedVerb = (props: Array<string>) => {
     return props.length > 1 ? 'are' : 'is';
 };
 
-const reportMissingProps = (props: Array<string>, existingProps: Array<string>, severity: string, target, eslintContext) => {
+const getMissingProps = (props: Array<string>, existingProps: Array<string>): Array<string> => {
     if (!props || !props.length) {
-        return;
+        return [];
     }
     const missingProps = props && props.filter((prop) => {
         return !existingProps.includes(prop);
     });
 
-    if (missingProps && missingProps.length) {
-        eslintContext.report(target, `${missingProps.join(', ')} ${pluralizedVerb(missingProps)} ${severity} but missing.`);
-    }
+    return missingProps;
 };
 
 const isJsllDir = (element: IAsyncHTMLElement) => {
@@ -38,9 +36,41 @@ const isHeadElement = (element: IAsyncHTMLElement): boolean => {
     return normalizeString(element.nodeName) === 'head';
 };
 
+const isObject = (target) => {
+    return (typeof target === 'object') && (!Array.isArray(target));
+};
+
+/** Tell if a expression statement is `awa.init` or `window.awa.init` */
+const isInitCode = (expression) => {
+    const { callee } = expression;
+
+    if (callee && callee.object) {
+        const callInitProp = callee.property && callee.property.name === 'init';
+
+        if ((callee.object.name === 'awa') && callInitProp) {
+            // awa.init(...)
+            return true;
+        }
+
+        const subObject = callee.object.object;
+
+        if (callee.object.object) {
+            // window.awa.init(...)
+            const callAwa = subObject.name === 'window' && callee.object.property.name === 'awa';
+
+            return callAwa && callInitProp;
+        }
+    }
+
+    return false;
+};
+
 export {
     isHeadElement,
+    isInitCode,
+    isObject,
     isJsllDir,
+    pluralizedVerb,
     severityMatch,
-    reportMissingProps
+    getMissingProps
 };

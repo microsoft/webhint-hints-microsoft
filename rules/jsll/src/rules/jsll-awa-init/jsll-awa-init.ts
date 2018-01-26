@@ -7,8 +7,8 @@ import { RuleContext } from 'sonarwhal/dist/src/lib/rule-context';
 import { IRule, IAsyncHTMLElement, IRuleBuilder, IElementFound, IScriptParse } from 'sonarwhal/dist/src/lib/types';
 import { debug as d } from 'sonarwhal/dist/src/lib/utils/debug';
 
-import { isPotentialInitScript, validateAwaInit } from '../validator';
-import { isJsllDir } from '../utils';
+import { isPotentialInitScript, configIsDefined } from '../validator';
+import { isJsllDir, isInitCode } from '../utils';
 
 import { Linter } from 'eslint';
 
@@ -35,7 +35,19 @@ const rule: IRuleBuilder = {
 
                 return {
                     ExpressionStatement(node) {
-                        validateAwaInit(node, eslintContext, true, isFirstExpressionStatement);
+                        const expression = node.expression;
+                        const isInit = isInitCode(expression);
+
+                        if (isInit) {
+                            if (!isFirstExpressionStatement) {
+                                eslintContext.report(node, '"awa.init" is not called as soon as possible.');
+                            }
+
+                            if (!configIsDefined(node, eslintContext)) {
+                                eslintContext.report(node, `The variable passed to "awa.init" is not defined.`);
+                            }
+                        }
+
                         isFirstExpressionStatement = false;
                         validated = true;
                     }
@@ -126,7 +138,6 @@ const rule: IRuleBuilder = {
             category: Category.other,
             description: `Validate the use of 'awa.init' to initialize the JSLL script.`
         },
-        ignoredConnectors: ['jsdom'],
         recommended: false,
         schema: [],
         worksWithLocalFiles: true

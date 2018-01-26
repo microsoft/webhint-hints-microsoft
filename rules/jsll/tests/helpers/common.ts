@@ -38,7 +38,34 @@ export const perfectConfig = {
     useShortNameForContentBlob: true
 };
 
+const calculatedConfig = `
+var appId = 'app' + 'id';
+var environment = 'test';
+var isprod = 'True';
+if (isprod.toLowerCase() === 'true') {
+    environment = 'prod';
+}
+var pageName = appId.replace('id', '');
+var pageType = pageName === 'config' ? 'json' : 'html';
+var market = 'en-US';
+
+var config = {
+    autoCapture: {},
+    coreData: {
+        appId: appId,
+        env: environment,
+        pageName: pageName,
+        pageType: pageType,
+        market: market
+    }
+};
+
+config.autoCapture.scroll = false;
+config.autoCapture.lineage = false;
+`;
+
 export const code = {
+    calculatedConfig,
     emptyObjconfig: `awa.init({});`,
     initConfig: `awa.init(config);`,
     jsllScript: `<script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js" type="text/javascript"></script>`,
