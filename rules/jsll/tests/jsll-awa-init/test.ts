@@ -54,7 +54,7 @@ const tests: Array<IRuleTest> = [
         //      <script src="../jsll-4.js"></script>
         //      <script>console.log('jsll')</script>
         // </head>
-        name: `The init script is not included, but other script tages are encountered after the JSLL script link`,
+        name: `The init script is not included, and non-init script tages are encountered after the JSLL script link`,
         reports: [{ message: messages.noInit }],
         serverConfig: generateHTMLPage(`${scriptWrapper(null, `console.log('jsll')`, true)}`)
     },

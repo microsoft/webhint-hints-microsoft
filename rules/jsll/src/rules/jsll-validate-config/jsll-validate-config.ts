@@ -26,7 +26,13 @@ const generateScript = (callInitCode) => {
             configUsed = Array.prototype.slice.call(arguments);
         };
 
-        window.awa = { init: newInit };
+        if (window.awa) {
+            window.awa.init = newInit;
+        } else {
+            // JSLL script was not included in the page.
+            // Should still validate config.
+            window.awa = { init: newInit };
+        }
 
         function callInit() {
             ${callInitCode}

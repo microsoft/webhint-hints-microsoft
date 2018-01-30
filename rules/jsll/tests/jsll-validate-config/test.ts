@@ -41,11 +41,11 @@ const stringPropertyConfig = {
 
 const tests: Array<IRuleTest> = [
     {
-        name: `The JSLL script was not included and the config is valid`,
+        name: `The JSLL script was not included, but the init script is present and the config is valid`,
         serverConfig: generateHTMLPage(`${scriptWrapper(`var config=${JSON.stringify(code.perfectConfig)};`, code.initConfig, false)}`)
     },
     {
-        name: `The JSLL script was not included but the config is not valid`,
+        name: `The JSLL script was not included, but the init script is present and config is not valid`,
         reports: [{ message: messages.missingAppId }],
         serverConfig: generateHTMLPage(`${scriptWrapper(deleteProp('appId'), code.initConfig, false)}`)
     },

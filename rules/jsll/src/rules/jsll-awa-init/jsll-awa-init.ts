@@ -27,7 +27,7 @@ const rule: IRuleBuilder = {
         let validated: boolean = false; // If the linter has run.
         let immediateAfterJSLLscript: boolean = false; // If JSLL init should be validated.
         let traverseStarts: boolean = false;
-        let tempInit: IScriptParse | null = null; // A temporary cache for JSLL init script content.
+        let tempInit: IScriptParse = null; // A temporary cache for JSLL init script content.
 
         linter.defineRule('jsll-awa-init', {
             create(eslintContext) {

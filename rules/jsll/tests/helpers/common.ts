@@ -38,6 +38,7 @@ export const perfectConfig = {
     useShortNameForContentBlob: true
 };
 
+/* eslint-disable no-useless-escape */
 const calculatedConfig = `
 var appId = 'app' + 'id';
 var environment = 'test';
@@ -47,7 +48,8 @@ if (isprod.toLowerCase() === 'true') {
 }
 var pageName = appId.replace('id', '');
 var pageType = pageName === 'config' ? 'json' : 'html';
-var market = 'en-US';
+var pathName = '/en-us';
+var market = pathName.toString().replace(/^\\/([a-z]*\-[a-z]*)/i, '$1');
 
 var config = {
     autoCapture: {},
@@ -63,6 +65,7 @@ var config = {
 config.autoCapture.scroll = false;
 config.autoCapture.lineage = false;
 `;
+/* eslint-enable no-useless-escape */
 
 export const code = {
     calculatedConfig,
