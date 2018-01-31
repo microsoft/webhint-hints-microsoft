@@ -23,11 +23,37 @@ const debug: debug.IDebugger = d(__filename);
 const rule: IRuleBuilder = {
     create(context: RuleContext): IRule {
         const linter = new Linter();
-        let isHead: boolean = true;
-        let validated: boolean = false; // If the linter has run.
-        let immediateAfterJSLLscript: boolean = false; // If JSLL init should be validated.
-        let traverseStarts: boolean = false;
-        let tempInit: IScriptParse = null; // A temporary cache for JSLL init script content.
+        /** States available. */
+        const states = {
+            apiBody: 'apiBody',
+            apiHead: 'apiHead',
+            body: 'body',
+            bodyOtherScript: 'bodyOtherScript',
+            head: 'head',
+            headOtherScript: 'headOtherScript',
+            start: 'start'
+        };
+        /** Current state. */
+        let currentState: string = states.start;
+        /** Error messages. */
+        const messages = {
+            noInit: `JSLL is not initialized with "awa.init(config)" function in <head>. Initialization script should be placed immediately after JSLL script.`,
+            notCallASAP: `"awa.init" is not called as soon as possible.`,
+            notImmediateAfter: `The JSLL init script should be immediately following the JSLL script.`,
+            notInHead: `The JSLL init script should be in <head>.`,
+            undefinedConfig: `The variable passed to "awa.init" is not defined.`
+        };
+
+        /** A collection of possible states when travering in head. */
+        const inHead: Array<string> = [states.head, states.apiHead, states.headOtherScript];
+        /** A collection of possible states when traversing in body. */
+        const inBody: Array<string> = [states.body, states.apiBody, states.bodyOtherScript];
+        /** A collection of possible states after visiting non-init scripts. */
+        const otherScripts: Array<string> = [states.headOtherScript, states.bodyOtherScript];
+        /**  If the linter has run. */
+        let validated: boolean = false;
+        /** Cache for external init script content. */
+        let tempInit: IScriptParse;
 
         linter.defineRule('jsll-awa-init', {
             create(eslintContext) {
@@ -40,11 +66,11 @@ const rule: IRuleBuilder = {
 
                         if (isInit) {
                             if (!isFirstExpressionStatement) {
-                                eslintContext.report(node, '"awa.init" is not called as soon as possible.');
+                                eslintContext.report(node, messages.notCallASAP);
                             }
 
                             if (!configIsDefined(node, eslintContext)) {
-                                eslintContext.report(node, `The variable passed to "awa.init" is not defined.`);
+                                eslintContext.report(node, messages.undefinedConfig);
                             }
                         }
 
@@ -55,33 +81,37 @@ const rule: IRuleBuilder = {
             }
         });
 
+        /** Handler on parsing of a script: Validate the init script. */
         const validateScript = async (scriptParse: IScriptParse) => {
             const sourceCode = scriptParse.sourceCode;
 
             if (!isPotentialInitScript(sourceCode)) {
-                immediateAfterJSLLscript = false;
+                if (currentState !== states.start) {
+                    // Only change state in `validateScript` after traversal starts.
+                    // Otherwise state such as `bodyOtherScript` will appear before `head`.
+                    currentState = inHead.includes(currentState) ? states.headOtherScript : states.bodyOtherScript;
+                }
 
                 return;
             }
 
-            if (!traverseStarts) {
+            if (currentState === states.start) {
                 // When jsll init script is included in an external script
                 // `parse::javascript` of the init script is emitted before `element::script` of the JSLL link.
-                // So wait to run `validateScript` until traversal starts, otherwise the `immediateAfterJSLLscript` flag is not right.
+                // So wait to run `validateScript` until traversal starts.
                 tempInit = scriptParse;
 
                 return;
             }
 
-            if (isHead && !immediateAfterJSLLscript) {
-                await context.report(scriptParse.resource, null, `The JSLL init script should be immediately following the JSLL script.`);
+            if (otherScripts.includes(currentState)) {
+                // Not immediate after the JSLL link.
+                await context.report(scriptParse.resource, null, messages.notImmediateAfter);
             }
 
-            if (!isHead) {
-                await context.report(scriptParse.resource, null, `The JSLL init script should be in <head>.`);
+            if (!inHead.includes(currentState)) {
+                await context.report(scriptParse.resource, null, messages.notInHead);
             }
-
-            immediateAfterJSLLscript = false;
 
             const results = linter.verify(sourceCode, { rules: { 'jsll-awa-init': 'error' } });
 
@@ -90,31 +120,36 @@ const rule: IRuleBuilder = {
             }
         };
 
-        const updateImmedateAfterJSLLScript = (data: IElementFound) => {
-            const { element }: { element: IAsyncHTMLElement, resource: string } = data;
+        /** Handler on entering a script element: Update state if it's the JSLL api link. */
+        const enterScript = (data: IElementFound) => {
+            const { element }: { element: IAsyncHTMLElement } = data;
 
-            if (immediateAfterJSLLscript) {
-                return;
+            if (isJsllDir(element)) {
+                if (inHead.includes(currentState)) {
+                    currentState = states.apiHead;
+                }
+
+                if (inBody.includes(currentState)) {
+                    currentState = states.apiBody;
+                }
             }
 
-            // JSLL script has been included at this point.
-            // Now JSLL init needs to be verified.
-            immediateAfterJSLLscript = isJsllDir(element);
-
-            if (immediateAfterJSLLscript && tempInit) {
+            if (tempInit) {
                 validateScript(tempInit);
                 tempInit = null;
             }
         };
 
-        const updateTraverseStart = () => {
-            traverseStarts = true;
+        /** Handler on entering the head element. */
+        const enterHead = () => {
+            currentState = states.head;
         };
 
+        /** Handler on entering the body element. */
         const enterBody = async (data: IElementFound) => {
-            const { resource }: { resource: string, element: IAsyncHTMLElement } = data;
+            currentState = states.body;
 
-            isHead = false;
+            const { resource }: { resource: string, element: IAsyncHTMLElement } = data;
 
             if (!validated) {
                 // Should verify init but no script tag was encountered after the JSLL link.
@@ -122,15 +157,15 @@ const rule: IRuleBuilder = {
                 // <head>
                 //      <script src="../jsll-4.js"></script>
                 // </head>
-                await context.report(resource, null, `JSLL is not initialized with "awa.init(config)" function in <head>. Initialization script should be placed immediately after JSLL script.`);
+                await context.report(resource, null, messages.noInit);
             }
         };
 
         return {
             'element::body': enterBody,
-            'element::script': updateImmedateAfterJSLLScript,
-            'parse::javascript': validateScript,
-            'traverse::start': updateTraverseStart
+            'element::head': enterHead,
+            'element::script': enterScript,
+            'parse::javascript': validateScript
         };
     },
     meta: {

@@ -24,10 +24,14 @@ const rule: IRuleBuilder = {
         const wrongScriptOrderMsg: string = `The JSLL script isn't placed prior to other scripts.`;
 
         const jsllDir: string = `https://az725175.vo.msecnd.net/scripts/jsll-`;
-        let isHead: boolean = true; // Flag to indicate if script is in head.
-        let totalHeadScriptCount: number = 0; // Total number of script tags in head.
-        let jsllScriptCount: number = 0; // Total number of JSLL script tag in head.
+        /** Flag that indicates if script is in head. */
+        let isHead: boolean = true;
+        /**  Total number of script tags in head. */
+        let totalHeadScriptCount: number = 0;
+        /** Total number of JSLL script tags in head. */
+        let jsllScriptCount: number = 0;
 
+        /** Handler on parsing of a script: Validate the JSLL api link. */
         const validateScript = async (data: IElementFound) => {
             const { element, resource }: { element: IAsyncHTMLElement, resource: string } = data;
             const passRegex = new RegExp(`^(\\d+\\.)js`); // 4.js
@@ -75,6 +79,7 @@ const rule: IRuleBuilder = {
             return;
         };
 
+        /** Handler on entering the body element. */
         const enterBody = async (event: IElementFound) => {
             const { resource }: { resource: string } = event;
 

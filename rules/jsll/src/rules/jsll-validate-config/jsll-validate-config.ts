@@ -17,6 +17,7 @@ const debug: debug.IDebugger = d(__filename);
  * Public
  * ------------------------------------------------------------------------------
  */
+/** Generate the script to be evaluated given the init code. */
 const generateScript = (callInitCode) => {
     const script = `(function stubAwaInit() {
         var originalInit = window.awa && window.awa.init ? window.awa.init.bind(window.awa) : null;
@@ -49,9 +50,12 @@ const generateScript = (callInitCode) => {
 
 const rule: IRuleBuilder = {
     create(context: RuleContext): IRule {
+        /** Cache for the init code. */
         let script = '';
+        /** Cache for the init code resource. */
         let scriptResource;
 
+        /** Handler on parse javascript: cache the init code and resource. */
         const populateScript = (scriptParse: IScriptParse) => {
             const sourceCode = scriptParse.sourceCode;
 
@@ -65,6 +69,7 @@ const rule: IRuleBuilder = {
             scriptResource = scriptParse.resource;
         };
 
+        /** Validate required and optional config property values. */
         const validateConfig = (configArgs): Array<Array<string>> => {
             const requiredMsgs = [];
             const optionalMsgs = [];
@@ -96,6 +101,7 @@ const rule: IRuleBuilder = {
             return [requiredMsgs, optionalMsgs];
         };
 
+        /** Handler on scan end: validate `config`. */
         const evaluate = async (data: IScanEnd) => {
             if (!script.length) {
                 // JSLL is not initialized at all, which is reported in the `jsll-awa-init` rule.

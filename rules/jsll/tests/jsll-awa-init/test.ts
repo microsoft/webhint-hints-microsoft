@@ -7,7 +7,6 @@ import { code, scriptWrapper } from '../helpers/common';
 
 const ruleName = getRuleName(__dirname);
 const messages = {
-    noConfigArgs: `JSLL initialization function "awa.init(config)" missing required parameter "config".`,
     noInit: `JSLL is not initialized with "awa.init(config)" function in <head>. Initialization script should be placed immediately after JSLL script.`,
     notCallASAP: `"awa.init" is not called as soon as possible.`,
     notImmediateAfter: `The JSLL init script should be immediately following the JSLL script.`,
