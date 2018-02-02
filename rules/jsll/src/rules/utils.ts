@@ -3,7 +3,7 @@ import { normalizeString } from 'sonarwhal/dist/src/lib/utils/misc';
 
 const jsllDir = `az725175.vo.msecnd.net/scripts/jsll-`;
 
-/** return if a property should be checked and reported. */
+/** Return if a property should be checked and reported. */
 const severityMatch = (parentObj: object, prop: string, severity: string): boolean => {
     return parentObj[severity].includes(prop);
 };

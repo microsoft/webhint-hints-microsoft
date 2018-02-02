@@ -23,18 +23,19 @@ const debug: debug.IDebugger = d(__filename);
 const rule: IRuleBuilder = {
     create(context: RuleContext): IRule {
         const linter = new Linter();
+
         /** States available. */
-        const states = {
-            apiBody: 'apiBody',
-            apiHead: 'apiHead',
-            body: 'body',
-            bodyOtherScript: 'bodyOtherScript',
-            head: 'head',
-            headOtherScript: 'headOtherScript',
-            start: 'start'
-        };
+        enum State {
+            apiBody,
+            apiHead,
+            body,
+            bodyOtherScript,
+            head,
+            headOtherScript,
+            start
+        }
         /** Current state. */
-        let currentState: string = states.start;
+        let currentState: State = State.start;
         /** Error messages. */
         const messages = {
             noInit: `JSLL is not initialized with "awa.init(config)" function in <head>. Initialization script should be placed immediately after JSLL script.`,
@@ -45,11 +46,11 @@ const rule: IRuleBuilder = {
         };
 
         /** A collection of possible states when travering in head. */
-        const inHead: Array<string> = [states.head, states.apiHead, states.headOtherScript];
+        const inHead: Array<State> = [State.head, State.apiHead, State.headOtherScript];
         /** A collection of possible states when traversing in body. */
-        const inBody: Array<string> = [states.body, states.apiBody, states.bodyOtherScript];
+        const inBody: Array<State> = [State.body, State.apiBody, State.bodyOtherScript];
         /** A collection of possible states after visiting non-init scripts. */
-        const otherScripts: Array<string> = [states.headOtherScript, states.bodyOtherScript];
+        const otherScripts: Array<State> = [State.headOtherScript, State.bodyOtherScript];
         /**  If the linter has run. */
         let validated: boolean = false;
         /** Cache for external init script content. */
@@ -86,16 +87,16 @@ const rule: IRuleBuilder = {
             const sourceCode = scriptParse.sourceCode;
 
             if (!isPotentialInitScript(sourceCode)) {
-                if (currentState !== states.start) {
+                if (currentState !== State.start) {
                     // Only change state in `validateScript` after traversal starts.
                     // Otherwise state such as `bodyOtherScript` will appear before `head`.
-                    currentState = inHead.includes(currentState) ? states.headOtherScript : states.bodyOtherScript;
+                    currentState = inHead.includes(currentState) ? State.headOtherScript : State.bodyOtherScript;
                 }
 
                 return;
             }
 
-            if (currentState === states.start) {
+            if (currentState === State.start) {
                 // When jsll init script is included in an external script
                 // `parse::javascript` of the init script is emitted before `element::script` of the JSLL link.
                 // So wait to run `validateScript` until traversal starts.
@@ -126,11 +127,11 @@ const rule: IRuleBuilder = {
 
             if (isJsllDir(element)) {
                 if (inHead.includes(currentState)) {
-                    currentState = states.apiHead;
+                    currentState = State.apiHead;
                 }
 
                 if (inBody.includes(currentState)) {
-                    currentState = states.apiBody;
+                    currentState = State.apiBody;
                 }
             }
 
@@ -142,14 +143,14 @@ const rule: IRuleBuilder = {
 
         /** Handler on entering the head element. */
         const enterHead = () => {
-            currentState = states.head;
+            currentState = State.head;
         };
 
         /** Handler on entering the body element. */
         const enterBody = async (data: IElementFound) => {
-            currentState = states.body;
+            currentState = State.body;
 
-            const { resource }: { resource: string, element: IAsyncHTMLElement } = data;
+            const { resource }: { resource: string } = data;
 
             if (!validated) {
                 // Should verify init but no script tag was encountered after the JSLL link.
