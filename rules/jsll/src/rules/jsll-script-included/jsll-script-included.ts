@@ -3,7 +3,7 @@
  */
 import { Category } from 'sonarwhal/dist/src/lib/enums/category';
 import { RuleContext } from 'sonarwhal/dist/src/lib/rule-context';
-import { IAsyncHTMLElement, IRule, IRuleBuilder, IElementFound, ITraverseUp, Severity } from 'sonarwhal/dist/src/lib/types';
+import { IAsyncHTMLElement, IRule, IRuleBuilder, IElementFound, Severity } from 'sonarwhal/dist/src/lib/types';
 import { normalizeString } from 'sonarwhal/dist/src/lib/utils/misc';
 
 import { isJsllDir } from '../utils';
@@ -24,10 +24,14 @@ const rule: IRuleBuilder = {
         const wrongScriptOrderMsg: string = `The JSLL script isn't placed prior to other scripts.`;
 
         const jsllDir: string = `https://az725175.vo.msecnd.net/scripts/jsll-`;
-        let isHead: boolean = true; // Flag to indicate if script is in head.
-        let totalHeadScriptCount: number = 0; // Total number of script tags in head.
-        let jsllScriptCount: number = 0; // Total number of JSLL script tag in head.
+        /** Flag that indicates if script is in head. */
+        let isHead: boolean = true;
+        /**  Total number of script tags in head. */
+        let totalHeadScriptCount: number = 0;
+        /** Total number of JSLL script tags in head. */
+        let jsllScriptCount: number = 0;
 
+        /** Handler on parsing of a script: Validate the JSLL api link. */
         const validateScript = async (data: IElementFound) => {
             const { element, resource }: { element: IAsyncHTMLElement, resource: string } = data;
             const passRegex = new RegExp(`^(\\d+\\.)js`); // 4.js
@@ -51,7 +55,7 @@ const rule: IRuleBuilder = {
                 return;
             }
 
-            if (totalHeadScriptCount > 1) {
+            if (totalHeadScriptCount > 1 && (jsllScriptCount === 1)) {
                 // There are other scripts in <head> prior to this JSLL script.
                 await context.report(resource, element, wrongScriptOrderMsg);
 
@@ -75,16 +79,17 @@ const rule: IRuleBuilder = {
             return;
         };
 
-        const enterBody = async (event: ITraverseUp) => {
+        /** Handler on entering the body element. */
+        const enterBody = async (event: IElementFound) => {
             const { resource }: { resource: string } = event;
+
+            isHead = false;
 
             if (jsllScriptCount === 0) {
                 await context.report(resource, null, noScriptInHeadMsg);
 
                 return;
             }
-
-            isHead = false;
         };
 
         return {

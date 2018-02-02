@@ -38,13 +38,44 @@ export const perfectConfig = {
     useShortNameForContentBlob: true
 };
 
+/* eslint-disable no-useless-escape */
+const calculatedConfig = `
+var appId = 'app' + 'id';
+var environment = 'test';
+var isprod = 'True';
+if (isprod.toLowerCase() === 'true') {
+    environment = 'prod';
+}
+var pageName = appId.replace('id', '');
+var pageType = pageName === 'config' ? 'json' : 'html';
+var pathName = '/en-us';
+var market = pathName.toString().replace(/^\\/([a-z]*\-[a-z]*)/i, '$1');
+
+var config = {
+    autoCapture: {},
+    coreData: {
+        appId: appId,
+        env: environment,
+        pageName: pageName,
+        pageType: pageType,
+        market: market
+    }
+};
+
+config.autoCapture.scroll = false;
+config.autoCapture.lineage = false;
+`;
+/* eslint-enable no-useless-escape */
+
 export const code = {
+    calculatedConfig,
     emptyObjconfig: `awa.init({});`,
     initConfig: `awa.init(config);`,
     jsllScript: `<script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js" type="text/javascript"></script>`,
     noConfigArgs: `awa.init();`,
     notImmediateInitNoFn: `var a = 1;</script><script>awa.init({})`,
-    notImmediateInithasFn: `console.log('a');</script><script>awa.init({})`
+    notImmediateInithasFn: `console.log('a');</script><script>awa.init({})`,
+    perfectConfig
 };
 
 /** Delete one or more properties. */
