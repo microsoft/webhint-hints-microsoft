@@ -12,12 +12,12 @@
     "timeout": "1m"
   },
   "dependencies": {
-    "locale-code": "^1.1.1",
-    "lodash.clonedeep": "^4.5.0"
+    "locale-code": "^1.1.1"
   },
   "description": "sonarwhal rule to validate Microsoft's JSLL configuration.",
   "devDependencies": {
     "@types/debug": "0.0.30",
+    "@types/lodash": "^4.14.101",
     "@types/node": "8.0.14",
     "async-retry": "^1.1.4",
     "ava": "^0.24.0",
@@ -30,6 +30,7 @@
     "eslint-plugin-markdown": "^1.0.0-beta.6",
     "eslint-plugin-typescript": "^0.8.1",
     "express": "^4.16.2",
+    "lodash": "^4.17.5",
     "markdownlint-cli": "^0.6.0",
     "npm-run-all": "^4.1.2",
     "on-headers": "^1.0.1",
