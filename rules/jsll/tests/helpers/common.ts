@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import * as cloneDeep from 'lodash.cloneDeep';
 
 /** Look for the target property recursively and modify/delete the value */
 export const modifyValue = (obj, targetProp: string, targetValue) => {
