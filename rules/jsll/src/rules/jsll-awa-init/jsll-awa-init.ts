@@ -4,8 +4,10 @@
 
 import { Category } from 'sonarwhal/dist/src/lib/enums/category';
 import { RuleContext } from 'sonarwhal/dist/src/lib/rule-context';
-import { IRule, IAsyncHTMLElement, IRuleBuilder, IElementFound, IScriptParse } from 'sonarwhal/dist/src/lib/types';
+import { IRule, RuleMetadata, IAsyncHTMLElement, ElementFound } from 'sonarwhal/dist/src/lib/types';
+import { ScriptParse } from 'sonarwhal/dist/src/lib/parsers/javascript/types';
 import { debug as d } from 'sonarwhal/dist/src/lib/utils/debug';
+import { RuleScope } from 'sonarwhal/dist/src/lib/enums/rulescope';
 
 import { isPotentialInitScript, configIsDefined } from '../validator';
 import { isJsllDir, isInitCode } from '../utils';
@@ -20,8 +22,18 @@ const debug: debug.IDebugger = d(__filename);
  * ------------------------------------------------------------------------------
  */
 
-const rule: IRuleBuilder = {
-    create(context: RuleContext): IRule {
+export default class JsllAwaInitRule implements IRule {
+    public static readonly meta: RuleMetadata = {
+        docs: {
+            category: Category.other,
+            description: `Validate the use of 'awa.init' to initialize the JSLL script.`
+        },
+        id: 'jsll/jsll-awa-init',
+        schema: [],
+        scope: RuleScope.any
+    }
+
+    public constructor(context: RuleContext) {
         const linter = new Linter();
 
         /** States available. */
@@ -54,7 +66,7 @@ const rule: IRuleBuilder = {
         /**  If the linter has run. */
         let validated: boolean = false;
         /** Cache for external init script content. */
-        let tempInit: IScriptParse;
+        let tempInit: ScriptParse;
 
         linter.defineRule('jsll-awa-init', {
             create(eslintContext) {
@@ -83,7 +95,7 @@ const rule: IRuleBuilder = {
         });
 
         /** Handler on parsing of a script: Validate the init script. */
-        const validateScript = async (scriptParse: IScriptParse) => {
+        const validateScript = async (scriptParse: ScriptParse) => {
             const sourceCode = scriptParse.sourceCode;
 
             if (!isPotentialInitScript(sourceCode)) {
@@ -122,7 +134,7 @@ const rule: IRuleBuilder = {
         };
 
         /** Handler on entering a script element: Update state if it's the JSLL api link. */
-        const enterScript = (data: IElementFound) => {
+        const enterScript = (data: ElementFound) => {
             const { element }: { element: IAsyncHTMLElement } = data;
 
             if (isJsllDir(element)) {
@@ -147,7 +159,7 @@ const rule: IRuleBuilder = {
         };
 
         /** Handler on entering the body element. */
-        const enterBody = async (data: IElementFound) => {
+        const enterBody = async (data: ElementFound) => {
             currentState = State.body;
 
             const { resource }: { resource: string } = data;
@@ -162,22 +174,9 @@ const rule: IRuleBuilder = {
             }
         };
 
-        return {
-            'element::body': enterBody,
-            'element::head': enterHead,
-            'element::script': enterScript,
-            'parse::javascript': validateScript
-        };
-    },
-    meta: {
-        docs: {
-            category: Category.other,
-            description: `Validate the use of 'awa.init' to initialize the JSLL script.`
-        },
-        recommended: false,
-        schema: [],
-        worksWithLocalFiles: true
+        context.on('element::body', enterBody);
+        context.on('element::head', enterHead);
+        context.on('element::script', enterScript);
+        context.on('parse::javascript', validateScript);
     }
-};
-
-module.exports = rule;
+}

@@ -6,12 +6,13 @@
         }
     },
     "formatters": "stylish",
+    "ignoredUrls": [],
     "parsers": ["javascript"],
     "rulesTimeout": 120000,
     "rules": {
-        "jsll-script-included": "error",
-        "jsll-awa-init": "error",
-        "jsll-optional-config": "warning",
-        "jsll-required-config": "error"
+        "jsll/jsll-awa-init": "error",
+        "jsll/jsll-script-included": "error",
+        "jsll/jsll-validate-config": "error"
     }
 }
+

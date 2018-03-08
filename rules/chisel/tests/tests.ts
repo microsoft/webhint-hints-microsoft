@@ -1,9 +1,8 @@
 import { generateHTMLPage } from 'sonarwhal/dist/tests/helpers/misc';
-import { getRuleName } from 'sonarwhal/dist/src/lib/utils/rule-helpers';
-import { IRuleTest } from 'sonarwhal/dist/tests/helpers/rule-test-type';
+import { RuleTest } from 'sonarwhal/dist/tests/helpers/rule-test-type';
 import * as ruleRunner from 'sonarwhal/dist/tests/helpers/rule-runner';
 
-const ruleName = getRuleName(__dirname);
+const ruleName = 'chisel';
 
 const html = {
     missingLang: `<!doctype html>
@@ -17,7 +16,7 @@ const html = {
     noProblems: generateHTMLPage()
 };
 
-const tests: Array<IRuleTest> = [
+const tests: Array<RuleTest> = [
     {
         name: `Page doesn't have any a11y problems and passes`,
         serverConfig: html.noProblems
@@ -29,7 +28,7 @@ const tests: Array<IRuleTest> = [
     }
 ];
 
-const testsWithCustomConfiguration: Array<IRuleTest> = [
+const testsWithCustomConfiguration: Array<RuleTest> = [
     {
         name: `Page doesn't have any a11y problems and passes`,
         serverConfig: html.noProblems
@@ -40,7 +39,7 @@ const testsWithCustomConfiguration: Array<IRuleTest> = [
     }
 ];
 
-const testsWithOverridenConfiguration: Array<IRuleTest> = [
+const testsWithOverridenConfiguration: Array<RuleTest> = [
     {
         name: `Page doesn't have any a11y problems and passes, but warns about the overriden config setting`,
         reports: [{ message: 'exclude is ignored when selector is set.' }],

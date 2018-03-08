@@ -3,10 +3,11 @@
  */
 import { Category } from 'sonarwhal/dist/src/lib/enums/category';
 import { RuleContext } from 'sonarwhal/dist/src/lib/rule-context';
-import { IAsyncHTMLElement, IRule, IRuleBuilder, IElementFound, Severity } from 'sonarwhal/dist/src/lib/types';
+import { IAsyncHTMLElement, IRule, ElementFound, Severity, RuleMetadata } from 'sonarwhal/dist/src/lib/types';
 import { normalizeString } from 'sonarwhal/dist/src/lib/utils/misc';
 
 import { isJsllDir } from '../utils';
+import { RuleScope } from 'sonarwhal/dist/src/lib/enums/rulescope';
 
 /*
  * ------------------------------------------------------------------------------
@@ -14,8 +15,18 @@ import { isJsllDir } from '../utils';
  * ------------------------------------------------------------------------------
  */
 
-const rule: IRuleBuilder = {
-    create(context: RuleContext): IRule {
+export default class JsllScriptIncludedRule implements IRule {
+    public static readonly meta: RuleMetadata = {
+        docs: {
+            category: Category.other,
+            description: `This rule confirms that JSLL script is included in the head of the page`
+        },
+        id: 'jsll/jsll-script-included',
+        schema: [],
+        scope: RuleScope.any
+    }
+
+    public constructor(context: RuleContext) {
         // Messages.
         const noScriptInHeadMsg: string = `No JSLL script was included in the <head> tag.`;
         const redundantScriptInHeadMsg: string = `More than one JSLL scripts were included in the <head> tag.`;
@@ -32,7 +43,7 @@ const rule: IRuleBuilder = {
         let jsllScriptCount: number = 0;
 
         /** Handler on parsing of a script: Validate the JSLL api link. */
-        const validateScript = async (data: IElementFound) => {
+        const validateScript = async (data: ElementFound) => {
             const { element, resource }: { element: IAsyncHTMLElement, resource: string } = data;
             const passRegex = new RegExp(`^(\\d+\\.)js`); // 4.js
             const warningRegex = new RegExp(`^(\\d+\\.){2,}js`); // 4.2.1.js
@@ -80,7 +91,7 @@ const rule: IRuleBuilder = {
         };
 
         /** Handler on entering the body element. */
-        const enterBody = async (event: IElementFound) => {
+        const enterBody = async (event: ElementFound) => {
             const { resource }: { resource: string } = event;
 
             isHead = false;
@@ -92,20 +103,7 @@ const rule: IRuleBuilder = {
             }
         };
 
-        return {
-            'element::body': enterBody,
-            'element::script': validateScript
-        };
-    },
-    meta: {
-        docs: {
-            category: Category.other,
-            description: `This rule confirms that JSLL script is included in the head of the page`
-        },
-        recommended: false,
-        schema: [],
-        worksWithLocalFiles: false
+        context.on('element::body', enterBody);
+        context.on('element::script', validateScript);
     }
-};
-
-module.exports = rule;
+}

@@ -141,7 +141,7 @@ const validators = {
 };
 
 /** Validate properties of the current node based on severity. */
-export const validateNodeProps = (expectedProps: Array<string>, node, severity: string, reports: Array<string>) => { // eslint-disable-line consistent-return
+export const validateNodeProps = (expectedProps: Array<string>, node, severity: string, reports: Array<string>) => {
     if (!expectedProps || !expectedProps.length) {
         return;
     }
