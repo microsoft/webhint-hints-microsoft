@@ -21,7 +21,7 @@ export default class JsllScriptIncludedRule implements IRule {
             category: Category.other,
             description: `This rule confirms that JSLL script is included in the head of the page`
         },
-        id: 'jsll/jsll-script-included',
+        id: 'jsll/script-included',
         schema: [],
         scope: RuleScope.any
     }

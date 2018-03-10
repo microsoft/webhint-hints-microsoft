@@ -10,9 +10,9 @@
     "parsers": ["javascript"],
     "rulesTimeout": 120000,
     "rules": {
-        "jsll/jsll-awa-init": "error",
-        "jsll/jsll-script-included": "error",
-        "jsll/jsll-validate-config": "error"
+        "jsll/awa-init": "error",
+        "jsll/script-included": "error",
+        "jsll/validate-config": "error"
     }
 }
 

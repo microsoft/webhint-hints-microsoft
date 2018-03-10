@@ -2,7 +2,7 @@ import { generateHTMLPage } from 'sonarwhal/dist/tests/helpers/misc';
 import { RuleTest } from 'sonarwhal/dist/tests/helpers/rule-test-type';
 import * as ruleRunner from 'sonarwhal/dist/tests/helpers/rule-runner';
 
-const ruleName = 'jsll/jsll-script-included';
+const ruleName = 'jsll/script-included';
 const baseUrl: string = `https://az725175.vo.msecnd.net/scripts/jsll`;
 const simpleVersionLink: string = `${baseUrl}-4.js`;
 const specifiedVersionLink: string = `${baseUrl}-4.2.1.js`;

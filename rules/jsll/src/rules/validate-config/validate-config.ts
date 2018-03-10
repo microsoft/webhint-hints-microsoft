@@ -58,7 +58,7 @@ export default class JsllValidateConfigRule implements IRule {
             category: Category.other,
             description: `Validate the required config properties.`
         },
-        id: 'jsll/jsll-validate-config',
+        id: 'jsll/validate-config',
         schema: [],
         scope: RuleScope.any
     }
@@ -118,7 +118,7 @@ export default class JsllValidateConfigRule implements IRule {
         /** Handler on scan end: validate `config`. */
         const evaluate = async (data: ScanEnd) => {
             if (!script.length) {
-                // JSLL is not initialized at all, which is reported in the `jsll-awa-init` rule.
+                // JSLL is not initialized at all, which is reported in the `awa-init` rule.
                 return;
             }
 

@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@mskeros/chisel": "^1.132.3",
-    "@sonarwhal/formatter-stylish": "^1.0.1"
+    "@sonarwhal/formatter-stylish": "^2.0.0"
   },
   "description": "sonarwhal rule to assess the accessibility of a web site using Microsoft's Chisel.",
   "devDependencies": {
@@ -35,7 +35,7 @@
     "nyc": "^11.4.1",
     "on-headers": "^1.0.1",
     "rimraf": "^2.6.2",
-    "sonarwhal": "^0.28.2",
+    "sonarwhal": "^1.0.0",
     "typescript": "^2.6.2",
     "typescript-eslint-parser": "^12.0.0"
   },
@@ -57,7 +57,8 @@
   "main": "dist/src/index.js",
   "name": "sonarwhal-rule-chisel",
   "peerDependencies": {
-    "sonarwhal": "^0.28.2"
+    "sonarwhal": "^1.0.0",
+    "@sonarwhal/parser-javascript": "^2.0.0"
   },
   "repository": "Microsoft/sonarwhal-microsoft-rules",
   "scripts": {

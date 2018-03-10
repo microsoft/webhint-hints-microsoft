@@ -5,7 +5,7 @@
 import { Category } from 'sonarwhal/dist/src/lib/enums/category';
 import { RuleContext } from 'sonarwhal/dist/src/lib/rule-context';
 import { IRule, RuleMetadata, IAsyncHTMLElement, ElementFound } from 'sonarwhal/dist/src/lib/types';
-import { ScriptParse } from 'sonarwhal/dist/src/lib/parsers/javascript/types';
+import { ScriptParse } from '@sonarwhal/parser-javascript/dist/src/ScriptParse';
 import { debug as d } from 'sonarwhal/dist/src/lib/utils/debug';
 import { RuleScope } from 'sonarwhal/dist/src/lib/enums/rulescope';
 
@@ -28,7 +28,7 @@ export default class JsllAwaInitRule implements IRule {
             category: Category.other,
             description: `Validate the use of 'awa.init' to initialize the JSLL script.`
         },
-        id: 'jsll/jsll-awa-init',
+        id: 'jsll/awa-init',
         schema: [],
         scope: RuleScope.any
     }
@@ -68,7 +68,7 @@ export default class JsllAwaInitRule implements IRule {
         /** Cache for external init script content. */
         let tempInit: ScriptParse;
 
-        linter.defineRule('jsll-awa-init', {
+        linter.defineRule('awa-init', {
             create(eslintContext) {
                 let isFirstExpressionStatement: boolean = true;
 
@@ -126,7 +126,7 @@ export default class JsllAwaInitRule implements IRule {
                 await context.report(scriptParse.resource, null, messages.notInHead);
             }
 
-            const results = linter.verify(sourceCode, { rules: { 'jsll-awa-init': 'error' } });
+            const results = linter.verify(sourceCode, { rules: { 'awa-init': 'error' } });
 
             for (const result of results) {
                 await context.report(scriptParse.resource, null, result.message);

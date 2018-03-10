@@ -4,7 +4,7 @@ import * as ruleRunner from 'sonarwhal/dist/tests/helpers/rule-runner';
 
 import { code, scriptWrapper } from '../helpers/common';
 
-const ruleName = 'jsll/jsll-awa-init';
+const ruleName = 'jsll/awa-init';
 const messages = {
     noInit: `JSLL is not initialized with "awa.init(config)" function in <head>. Initialization script should be placed immediately after JSLL script.`,
     notCallASAP: `"awa.init" is not called as soon as possible.`,

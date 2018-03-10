@@ -4,7 +4,7 @@ import * as ruleRunner from 'sonarwhal/dist/tests/helpers/rule-runner';
 
 import { code, deleteProp, modifyConfigVal, scriptWrapper } from '../helpers/common';
 
-const ruleName = 'jsll/jsll-validate-config';
+const ruleName = 'jsll/validate-config';
 const messages = {
     invalidAppId: `The "appId" must be a non-empty string.`,
     invalidAutoCapture: `The "autoCapture" property is not a valid object.`,
