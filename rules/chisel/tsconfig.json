@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "rootDir": ".",
+        "outDir": "dist",
         "alwaysStrict": true,
         "module": "commonjs",
         "sourceMap": true,
@@ -14,9 +14,11 @@
         ]
     },
     "exclude": [
+        "dist",
         "node_modules"
     ],
     "include": [
-        "**/*.ts"
+        "src/**/*.ts",
+        "tests/**/*.ts"
     ]
 }
