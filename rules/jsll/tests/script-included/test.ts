@@ -1,9 +1,8 @@
 import { generateHTMLPage } from 'sonarwhal/dist/tests/helpers/misc';
-import { IRuleTest } from 'sonarwhal/dist/tests/helpers/rule-test-type';
-import { getRuleName } from 'sonarwhal/dist/src/lib/utils/rule-helpers';
+import { RuleTest } from 'sonarwhal/dist/tests/helpers/rule-test-type';
 import * as ruleRunner from 'sonarwhal/dist/tests/helpers/rule-runner';
 
-const ruleName: string = getRuleName(__dirname);
+const ruleName = 'jsll/script-included';
 const baseUrl: string = `https://az725175.vo.msecnd.net/scripts/jsll`;
 const simpleVersionLink: string = `${baseUrl}-4.js`;
 const specifiedVersionLink: string = `${baseUrl}-4.2.1.js`;
@@ -29,7 +28,7 @@ const warningScriptVersionMsg = `Use the latest release of JSLL with 'jsll-4.js'
 const invalidScriptVersionMsg = `The jsll script versioning is not valid.`;
 const wrongScriptOrderMsg = `The JSLL script isn't placed prior to other scripts.`;
 
-const tests: Array<IRuleTest> = [
+const tests: Array<RuleTest> = [
     {
         name: 'JSLL script locates in the <head> tag and has the recommended version format',
         serverConfig: generateHTMLPage(generateScript(simpleVersionLink))

@@ -4,11 +4,14 @@
 
 import { Category } from 'sonarwhal/dist/src/lib/enums/category';
 import { RuleContext } from 'sonarwhal/dist/src/lib/rule-context';
-import { IRule, IRuleBuilder, IScriptParse, IScanEnd } from 'sonarwhal/dist/src/lib/types';
+import { IRule, ScanEnd, RuleMetadata } from 'sonarwhal/dist/src/lib/types';
+// import { ScriptParse } from 'sonarwhal/dist/src/lib/parsers/javascript/types';
+import { ScriptParse } from '@sonarwhal/parser-javascript/dist/src/scriptParse';
 import { debug as d } from 'sonarwhal/dist/src/lib/utils/debug';
 
 import { isPotentialInitScript, validateNodeProps, configProps } from '../validator';
 import { isObject } from '../utils';
+import { RuleScope } from 'sonarwhal/dist/src/lib/enums/rulescope';
 
 const debug: debug.IDebugger = d(__filename);
 
@@ -48,15 +51,26 @@ const generateScript = (callInitCode) => {
     return script;
 };
 
-const rule: IRuleBuilder = {
-    create(context: RuleContext): IRule {
+
+export default class JsllValidateConfigRule implements IRule {
+    public static readonly meta: RuleMetadata = {
+        docs: {
+            category: Category.other,
+            description: `Validate the required config properties.`
+        },
+        id: 'jsll/validate-config',
+        schema: [],
+        scope: RuleScope.any
+    }
+
+    public constructor(context: RuleContext) {
         /** Cache for the init code. */
         let script = '';
         /** Cache for the init code resource. */
         let scriptResource;
 
         /** Handler on parse javascript: cache the init code and resource. */
-        const populateScript = (scriptParse: IScriptParse) => {
+        const populateScript = (scriptParse: ScriptParse) => {
             const sourceCode = scriptParse.sourceCode;
 
             if (!isPotentialInitScript(sourceCode)) {
@@ -102,9 +116,9 @@ const rule: IRuleBuilder = {
         };
 
         /** Handler on scan end: validate `config`. */
-        const evaluate = async (data: IScanEnd) => {
+        const evaluate = async (data: ScanEnd) => {
             if (!script.length) {
-                // JSLL is not initialized at all, which is reported in the `jsll-awa-init` rule.
+                // JSLL is not initialized at all, which is reported in the `awa-init` rule.
                 return;
             }
 
@@ -123,20 +137,7 @@ const rule: IRuleBuilder = {
             });
         };
 
-        return {
-            'parse::javascript': populateScript,
-            'scan::end': evaluate
-        };
-    },
-    meta: {
-        docs: {
-            category: Category.other,
-            description: `Validate the required config properties.`
-        },
-        recommended: false,
-        schema: [],
-        worksWithLocalFiles: true
+        context.on('parse::javascript', populateScript);
+        context.on('scan::end', evaluate);
     }
-};
-
-module.exports = rule;
+}
