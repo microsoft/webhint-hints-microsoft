@@ -1,11 +1,10 @@
 import { generateHTMLPage } from 'sonarwhal/dist/tests/helpers/misc';
-import { getRuleName } from 'sonarwhal/dist/src/lib/utils/rule-helpers';
-import { IRuleTest } from 'sonarwhal/dist/tests/helpers/rule-test-type';
+import { RuleTest } from 'sonarwhal/dist/tests/helpers/rule-test-type';
 import * as ruleRunner from 'sonarwhal/dist/tests/helpers/rule-runner';
 
 import { code, scriptWrapper } from '../helpers/common';
 
-const ruleName = getRuleName(__dirname);
+const ruleName = 'jsll/awa-init';
 const messages = {
     noInit: `JSLL is not initialized with "awa.init(config)" function in <head>. Initialization script should be placed immediately after JSLL script.`,
     notCallASAP: `"awa.init" is not called as soon as possible.`,
@@ -14,7 +13,7 @@ const messages = {
     undefinedConfig: `The variable passed to "awa.init" is not defined.`
 };
 
-const tests: Array<IRuleTest> = [
+const tests: Array<RuleTest> = [
     {
         // Validate init should still run even if the JSLL script link is not included.
         name: `The JSLL script itself was not included`,

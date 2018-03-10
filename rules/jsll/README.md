@@ -8,9 +8,9 @@ multiple related rules.
 JSLL is the analytics library used by Microsoft. This package
 contains the following rules:
 
-* `jsll-script-included`
-* `jsll-awa-init`
-* `jsll-validate-config`
+* `jsll/script-included`
+* `jsll/awa-init`
+* `jsll/validate-config`
 
 These rules test the following:
 
@@ -119,14 +119,14 @@ Invalid required/optional properties.
 
 ### How the rule works
 
-* `jsll-script-included` uses two variables `totalHeadScriptCount` and
+* `script-included` uses two variables `totalHeadScriptCount` and
   `jsllScriptCount` to keep track of the total number of script tags and the
   number of jsll script tags in head during traversal. `jsllScriptCount` is used
   to report the absence/redundancy of the jsll api links. And by comparing the
   value of the two variables, it validates the location of the JSLL api link
   relative to other script tags in `head`.
 
-* `jsll-awa-init` uses a central state machine `currentState` to keep track of
+* `awa-init` uses a central state machine `currentState` to keep track of
   the current traversal location. It starts from `start` in the beginning of a
   scan and switches between six alternative values: `head`, `apiHead`,
   `headOtherScript`, `body`, `apiBody`, `bodyOtherScript`. State is only updated
@@ -146,6 +146,6 @@ Invalid required/optional properties.
   validate later after the traversal starts so that the central state machine
   reflects the correct location information.
 
-* `jsll-validate-config` stubs the `init` function to expose the `config`
+* `validate-config` stubs the `init` function to expose the `config`
   variable passed into the `init` function when running the init script. The
   required and optional properties of the `config` variable is validated.

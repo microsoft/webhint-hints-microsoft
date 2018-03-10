@@ -1,11 +1,10 @@
 import { generateHTMLPage } from 'sonarwhal/dist/tests/helpers/misc';
-import { getRuleName } from 'sonarwhal/dist/src/lib/utils/rule-helpers';
-import { IRuleTest } from 'sonarwhal/dist/tests/helpers/rule-test-type';
+import { RuleTest } from 'sonarwhal/dist/tests/helpers/rule-test-type';
 import * as ruleRunner from 'sonarwhal/dist/tests/helpers/rule-runner';
 
 import { code, deleteProp, modifyConfigVal, scriptWrapper } from '../helpers/common';
 
-const ruleName = getRuleName(__dirname);
+const ruleName = 'jsll/validate-config';
 const messages = {
     invalidAppId: `The "appId" must be a non-empty string.`,
     invalidAutoCapture: `The "autoCapture" property is not a valid object.`,
@@ -39,7 +38,7 @@ const stringPropertyConfig = {
     useShortNameForContentBlob: true
 };
 
-const tests: Array<IRuleTest> = [
+const tests: Array<RuleTest> = [
     {
         name: `The JSLL script was not included, but the init script is present and the config is valid`,
         serverConfig: generateHTMLPage(`${scriptWrapper(`var config=${JSON.stringify(code.perfectConfig)};`, code.initConfig, false)}`)
