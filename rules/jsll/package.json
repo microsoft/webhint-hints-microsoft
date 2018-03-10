@@ -12,7 +12,8 @@
     "timeout": "1m"
   },
   "dependencies": {
-    "locale-code": "^1.1.1"
+    "locale-code": "^1.1.1",
+    "eslint": "^4.18.2"
   },
   "description": "sonarwhal rule to validate Microsoft's JSLL usage.",
   "devDependencies": {
@@ -22,7 +23,6 @@
     "async-retry": "^1.2.1",
     "ava": "^0.25.0",
     "cpx": "^1.5.0",
-    "eslint": "^4.18.2",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-markdown": "^1.0.0-beta.7",
     "eslint-plugin-typescript": "^0.9.0",
@@ -76,5 +76,5 @@
     "sonarwhal": "node node_modules/sonarwhal/dist/src/bin/sonarwhal.js"
   },
   "repository": "Microsoft/sonarwhal-rules-microsoft",
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
