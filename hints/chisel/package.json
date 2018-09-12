@@ -1,0 +1,82 @@
+{
+  "author": "Microsoft",
+  "ava": {
+    "babel": {
+      "presets": []
+    },
+    "concurrency": 5,
+    "failFast": false,
+    "files": [
+      "dist/tests/**/*.js"
+    ],
+    "timeout": "1m"
+  },
+  "dependencies": {
+    "@mskeros/chisel": "^1.141.1"
+  },
+  "description": "webhint hint to assess the accessibility of a web site using Microsoft's Chisel.",
+  "devDependencies": {
+    "@hint/parser-javascript": "^1.0.1",
+    "@hint/utils-tests-helpers": "^1.0.1",
+    "@types/debug": "0.0.30",
+    "@types/node": "8.0.14",
+    "async-retry": "^1.1.4",
+    "ava": "^0.25.0",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-istanbul": "^4.1.5",
+    "babel-preset-es2017": "^6.22.0",
+    "babel-register": "^6.26.0",
+    "cpx": "^1.5.0",
+    "eslint": "^4.15.0",
+    "eslint-plugin-markdown": "^1.0.0-beta.6",
+    "eslint-plugin-typescript": "^0.8.1",
+    "express": "^4.16.2",
+    "hint": "^3.4.0",
+    "markdownlint-cli": "^0.6.0",
+    "npm-run-all": "^4.1.2",
+    "nyc": "^11.4.1",
+    "on-headers": "^1.0.1",
+    "rimraf": "^2.6.2",
+    "typescript": "^2.6.2",
+    "typescript-eslint-parser": "^12.0.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "dist/src",
+    "npm-shrinkwrap.json"
+  ],
+  "homepage": "https://webhint.io",
+  "keywords": [
+    "chisel",
+    "hint",
+    "webhint",
+    "webhint-chisel"
+  ],
+  "license": "Apache-2.0",
+  "main": "dist/src/index.js",
+  "name": "webhint-hint-chisel",
+  "peerDependencies": {
+    "hint": "^3.4.0",
+    "@hint/parser-javascript": "^1.0.1"
+  },
+  "repository": "Microsoft/sonarwhal-rules-microsoft",
+  "scripts": {
+    "build": "npm run clean && npm-run-all build:*",
+    "build-release": "npm run clean && npm run build:assets && tsc --inlineSourceMap false --removeComments true",
+    "build:assets": "cpx \"./{src,tests}/**/{!(*.ts),.!(ts)}\" dist",
+    "build:ts": "tsc",
+    "clean": "rimraf dist",
+    "lint": "npm-run-all lint:*",
+    "lint:js": "eslint . --cache --ext js --ext md --ext ts --ignore-path .eslintignore --report-unused-disable-directives",
+    "lint:md": "markdownlint --ignore CHANGELOG.md *.md",
+    "test": "npm run lint && npm run build && nyc ava",
+    "watch": "npm run build && npm-run-all --parallel -c watch:*",
+    "watch:assets": "npm run build:assets -- -w --no-initial",
+    "watch:test": "ava --watch",
+    "watch:ts": "npm run build:ts -- --watch",
+    "webhint": "node node_modules/hint/dist/src/bin/hint.js"
+  },
+  "version": "2.0.0"
+}

@@ -2,11 +2,12 @@
 *.log
 *.pid
 *.STALE
+hints/*/.eslintcache
 .DS_Store
 .nyc_output
 /.vscode/
 /build/
 /coverage/
-rules/*/node_modules/
-rules/*/dist/
+hints/*/node_modules/
+hints/*/dist/
 

@@ -1,11 +1,11 @@
-# Microsoft sonarwhal rules
+# Microsoft webhint hints
 
-This repository contains rules specific to Microsoft projects.
+This repository contains hints specific to Microsoft projects.
 
-To know more about each rule package, visit their respective `readme.md`:
+To know more about each hint package, visit their respective `readme.md`:
 
-* [chisel](./rules/chisel/README.md)
-* [jsll](./rules/jsll/README.md)
+* [chisel](./hints/chisel/README.md)
+* [jsll](./hints/jsll/README.md)
 
 # Contributing
 
