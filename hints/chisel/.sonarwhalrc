@@ -1,0 +1,14 @@
+{
+    "connector": {
+        "name": "jsdom",
+        "options": {
+            "waitFor": 1000
+        }
+    },
+    "formatters": "stylish",
+    "parsers": [],
+    "hintsTimeout": 120000,
+    "hints": {
+        "chisel": "warning"
+    }
+}

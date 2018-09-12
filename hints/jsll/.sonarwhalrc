@@ -1,0 +1,18 @@
+{
+    "connector": {
+        "name": "jsdom",
+        "options": {
+            "waitFor": 1000
+        }
+    },
+    "formatters": "stylish",
+    "ignoredUrls": [],
+    "parsers": ["javascript"],
+    "hintsTimeout": 120000,
+    "hints": {
+        "jsll/awa-init": "error",
+        "jsll/script-included": "error",
+        "jsll/validate-config": "error"
+    }
+}
+
