@@ -61,7 +61,7 @@
     "hint": "^3.4.0",
     "@hint/parser-javascript": "^1.0.1"
   },
-  "repository": "Microsoft/sonarwhal-rules-microsoft",
+  "repository": "Microsoft/webhint-hints-microsoft",
   "scripts": {
     "build": "npm run clean && npm-run-all build:*",
     "build-release": "npm run clean && npm run build:assets && tsc --inlineSourceMap false --removeComments true",
