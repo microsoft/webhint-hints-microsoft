@@ -45,7 +45,7 @@ export default class ChiselHint {
                 }
             }
         }],
-        scope: HintScope.site
+        scope: HintScope.any
     };
 
 
