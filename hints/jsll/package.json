@@ -18,11 +18,11 @@
   "description": "webhint hint to validate Microsoft's JSLL usage.",
   "devDependencies": {
     "@hint/parser-javascript": "^1.0.1",
-    "@hint/utils-tests-helpers": "^1.0.1",
+    "@hint/utils-tests-helpers": "^6.5.3",
     "@types/debug": "0.0.30",
     "@types/node": "^10.10.1",
     "async-retry": "^1.2.1",
-    "ava": "^0.25.0",
+    "ava": "^5.1.0",
     "cpx": "^1.5.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-markdown": "^1.0.0-beta.8",
