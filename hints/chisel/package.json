@@ -17,7 +17,7 @@
   "description": "webhint hint to assess the accessibility of a web site using Microsoft's Chisel.",
   "devDependencies": {
     "@hint/parser-javascript": "^1.0.1",
-    "@hint/utils-tests-helpers": "^1.0.1",
+    "@hint/utils-tests-helpers": "^6.5.3",
     "@types/debug": "0.0.30",
     "@types/node": "^10.10.1",
     "async-retry": "^1.2.1",
@@ -31,7 +31,7 @@
     "eslint-plugin-markdown": "^1.0.0-beta.8",
     "eslint-plugin-typescript": "^0.12.0",
     "express": "^4.16.2",
-    "hint": "^3.4.0",
+    "hint": "^7.1.3",
     "markdownlint-cli": "^0.13.0",
     "npm-run-all": "^4.1.2",
     "nyc": "^13.0.1",
@@ -58,7 +58,7 @@
   "name": "webhint-hint-chisel",
   "peerDependencies": {
     "@hint/parser-javascript": "^1.0.1",
-    "hint": "^3.4.0"
+    "hint": "^7.1.3"
   },
   "repository": "Microsoft/webhint-hints-microsoft",
   "scripts": {
