@@ -18,7 +18,7 @@
   "description": "webhint hint to validate Microsoft's JSLL usage.",
   "devDependencies": {
     "@hint/parser-javascript": "^1.0.1",
-    "@hint/utils-tests-helpers": "^1.0.1",
+    "@hint/utils-tests-helpers": "^6.5.6",
     "@types/debug": "0.0.30",
     "@types/node": "^10.10.1",
     "async-retry": "^1.2.1",
@@ -28,7 +28,7 @@
     "eslint-plugin-markdown": "^1.0.0-beta.8",
     "eslint-plugin-typescript": "^0.12.0",
     "express": "^4.16.2",
-    "hint": "^3.4.0",
+    "hint": "^7.1.10",
     "lodash.clonedeep": "^4.5.0",
     "markdownlint-cli": "^0.13.0",
     "npm-link-check": "^2.0.0",
@@ -57,7 +57,7 @@
   "name": "webhint-hint-jsll",
   "peerDependencies": {
     "@hint/parser-javascript": "^1.0.1",
-    "hint": "^3.4.0"
+    "hint": "^7.1.10"
   },
   "repository": "Microsoft/webhint-hints-microsoft",
   "scripts": {
